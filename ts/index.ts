@@ -11,6 +11,7 @@ const resizeCanvas = ($canvas: HTMLCanvasElement) => {
 };
 
 (() => {
+  // canvas
   const $canvas = document.querySelector("#canvas");
   if (!($canvas instanceof HTMLCanvasElement))
     return alert("#canvas가 존재하지 않습니다.");
@@ -23,28 +24,33 @@ const resizeCanvas = ($canvas: HTMLCanvasElement) => {
   const background = new Background(ctx);
   // 마리오 객체 생성
   const mario = new Mario(ctx, {
-    x: 500,
+    x: 240,
     y: innerHeight - (innerHeight / 6.8 + 60),
   });
 
-  // 키 누름 이벤트
+  // 키 누름 시작
   window.addEventListener("keydown", (e) => {
-    if (!e.key.includes("Arrow")) return;
+    const key = e.key === " " ? "Space" : e.key;
 
-    // 처음 키를 누른 시간 기록
-    if (false === mario.getIsKeyPress()) mario.setStartTime(Date.now());
+    // 이미 같은 키를 누르고 있다면
+    if (mario.getKeys().hasOwnProperty(key)) return;
 
-    // 누른 키 기록
-    mario.setIsKeyPress(true);
-    mario.setKey(e.key);
+    // 현재 누른 키를 등록
+    mario.setKeys({ [key]: { startTime: Date.now() } });
   });
 
   // 키 누름 중지
-  window.addEventListener("keyup", () => {
+  window.addEventListener("keyup", (e) => {
+    const key = e.key === " " ? "Space" : e.key;
+
     mario.setIsNext(true);
 
     // 클릭이 끝나면 마지막 행동 수정 ( ex) 걷는 중에 끝나면 서 있는 모션 )
     mario.move();
+    mario.draw();
+
+    // 이전에 눌렀던 기록 제거
+    delete mario.getKeys()[key];
 
     // 초기화
     mario.reset();
@@ -52,23 +58,43 @@ const resizeCanvas = ($canvas: HTMLCanvasElement) => {
 
   // 애니메이션 실행 함수
   const startAnimation = () => {
-    if (!mario.getKey()) return requestAnimationFrame(startAnimation);
+    // 현재 누르고 있는 키들
+    const keys = mario.getKeys();
+
+    // 좌/우측중 하나를 누르고 있다면 누른 시점의 값을 얻음
+    const startTime =
+      keys?.ArrowRight?.startTime || keys?.ArrowLeft?.startTime || Date.now();
 
     // 계속 클릭 시 가속
-    if (Date.now() - mario.getStartTime() > 1000) mario.setSpeed(2);
+    if (Date.now() - startTime > 1000) mario.setSpeed(1.5);
+    else mario.setSpeed(1);
 
-    if (mario.getCount() % mario.getSpeed() === 0) {
-      // 계속 클릭 중이라면 실행
-      if (mario.getIsKeyPress()) mario.toggleIsNext();
-
-      // >>> 캐릭터 렌더링 바로 이전에 실행되지 않아서 캐릭터가 중복 그려지는 문제 있음
-      background.draw();
-
-      // 이동
-      mario.move();
+    // 좌/우측을 계속 누르고 있다면
+    // 가속도가 붙었다면 달리기 이미지 전환 속도 up
+    if ((keys?.ArrowRight || keys?.ArrowLeft) && mario.getSpeed() === 1.5) {
+      mario.toggleIsNext();
+    }
+    // 가속도가 붙기 전이라면 4번 화면을 그릴 때마다 이미지 전환
+    else if (
+      (keys?.ArrowRight || keys?.ArrowLeft) &&
+      mario.getCount() % 4 === 0
+    ) {
+      mario.toggleIsNext();
     }
 
-    // "requestAnimationFrame()"의 반복 속도가 빨라서 조금 늦주기 위해 사용하는 변수
+    // 배경 색칠
+    background.draw();
+
+    // 이동
+    mario.move();
+
+    // 점프
+    mario.jump();
+
+    // 렌더링
+    mario.draw();
+
+    // 반복 횟수
     mario.addCount(1);
 
     // 애니메이션 실행
