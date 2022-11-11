@@ -25,7 +25,7 @@ const resizeCanvas = ($canvas: HTMLCanvasElement) => {
   // 마리오 객체 생성
   const mario = new Mario(ctx, {
     x: 240,
-    y: innerHeight - (innerHeight / 6.8 + 60),
+    y: innerHeight - (innerHeight / 6.8 + 70),
   });
 
   // 키 누름 시작
@@ -34,6 +34,19 @@ const resizeCanvas = ($canvas: HTMLCanvasElement) => {
 
     // 이미 같은 키를 누르고 있다면
     if (mario.getKeys().hasOwnProperty(key)) return;
+
+    // 점프중이라면 엎드리기 금지
+    if (key === "ArrowDown" && mario.isJumping()) return;
+
+    // // 좌/우 방향키 동시 입력 금지
+    // if (key === "ArrowRight" && mario.getKeys().hasOwnProperty("ArrowLeft")) {
+    //   delete mario.getKeys()["ArrowLeft"];
+    // } else if (
+    //   key === "ArrowLeft" &&
+    //   mario.getKeys().hasOwnProperty("ArrowRight")
+    // ) {
+    //   delete mario.getKeys()["ArrowRight"];
+    // }
 
     // 현재 누른 키를 등록
     mario.setKeys({ [key]: { startTime: Date.now() } });
@@ -45,9 +58,11 @@ const resizeCanvas = ($canvas: HTMLCanvasElement) => {
 
     mario.setIsNext(true);
 
-    // 클릭이 끝나면 마지막 행동 수정 ( ex) 걷는 중에 끝나면 서 있는 모션 )
-    mario.move();
-    mario.draw();
+    // 걷기 중지 및 엎드리기를 중지하면 서있는 모션으로 변경
+    if (key.includes("Arrow")) {
+      mario.stand(key);
+      mario.draw();
+    }
 
     // 이전에 눌렀던 기록 제거
     delete mario.getKeys()[key];
@@ -90,6 +105,9 @@ const resizeCanvas = ($canvas: HTMLCanvasElement) => {
 
     // 점프
     mario.jump();
+
+    // 엎드리기
+    mario.crawl();
 
     // 렌더링
     mario.draw();
