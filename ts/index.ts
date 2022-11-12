@@ -1,5 +1,6 @@
 import Background from "./class/Background";
 import Mario from "./class/Mario";
+import Block from "./class/Block";
 
 /**
  * 2022/11/07 - 캔버스 사이즈 지정 - by 1-blue
@@ -25,7 +26,7 @@ const resizeCanvas = ($canvas: HTMLCanvasElement) => {
   // 마리오 객체 생성
   const mario = new Mario(ctx, {
     x: 240,
-    y: innerHeight - (innerHeight / 6.8 + 70),
+    y: 200,
   });
 
   // 키 누름 시작
@@ -35,10 +36,13 @@ const resizeCanvas = ($canvas: HTMLCanvasElement) => {
     // 이미 같은 키를 누르고 있다면
     if (mario.getKeys().hasOwnProperty(key)) return;
 
+    // 점프중에 다시 점프 금지
+    if (key === "Space" && mario.isJumping()) return;
+
     // 점프중이라면 엎드리기 금지
     if (key === "ArrowDown" && mario.isJumping()) return;
 
-    // // 좌/우 방향키 동시 입력 금지
+    // // >>> 좌/우 방향키 동시 입력 금지
     // if (key === "ArrowRight" && mario.getKeys().hasOwnProperty("ArrowLeft")) {
     //   delete mario.getKeys()["ArrowLeft"];
     // } else if (
@@ -80,7 +84,7 @@ const resizeCanvas = ($canvas: HTMLCanvasElement) => {
     const startTime =
       keys?.ArrowRight?.startTime || keys?.ArrowLeft?.startTime || Date.now();
 
-    // 계속 클릭 시 가속
+    // 계속 클릭 시 가속 ( >>> 단, 점프중 가속 금지 )
     if (Date.now() - startTime > 1000) mario.setSpeed(1.5);
     else mario.setSpeed(1);
 
@@ -89,7 +93,7 @@ const resizeCanvas = ($canvas: HTMLCanvasElement) => {
     if ((keys?.ArrowRight || keys?.ArrowLeft) && mario.getSpeed() === 1.5) {
       mario.toggleIsNext();
     }
-    // 가속도가 붙기 전이라면 4번 화면을 그릴 때마다 이미지 전환
+    // 가속도가 붙기 전이라면 4번 화면을 그릴 때마다 이미지 전환 ( 이미지 변환의 주기를 줄이면 빨리 달리는 느낌 )
     else if (
       (keys?.ArrowRight || keys?.ArrowLeft) &&
       mario.getCount() % 4 === 0
@@ -100,20 +104,8 @@ const resizeCanvas = ($canvas: HTMLCanvasElement) => {
     // 배경 색칠
     background.draw();
 
-    // 이동
-    mario.move();
-
-    // 점프
-    mario.jump();
-
-    // 엎드리기
-    mario.crawl();
-
-    // 렌더링
-    mario.draw();
-
-    // 반복 횟수
-    mario.addCount(1);
+    // 마리오 실행
+    mario.execute(blocks);
 
     // 애니메이션 실행
     requestAnimationFrame(startAnimation);

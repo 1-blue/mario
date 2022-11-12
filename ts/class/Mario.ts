@@ -1,5 +1,6 @@
 import type { Position, CharacterStatus, Keys, Size } from "../types/index";
 import { marioKeycode } from "../utils/index";
+import Block from "./Block";
 
 /**
  * 마리오 클래스
@@ -15,11 +16,14 @@ import { marioKeycode } from "../utils/index";
  * @param speed 현재 속도 ( 낮을수록 빠름 )
  * @param count 반복 횟수 ( 속도에 맞게 이미지 렌더링 순서를 지정하기 위함 )
  * @param direction 현재 보고있는 방향 ( true: 우측, false: 좌측 )
+ * @param prevPos 이전에 그린 마리오의 x, y 좌표
+ * @param minFallSpeed 최소 하강 속도
+ * @param maxFallSpeed 최대 하강 속도
+ * @param fallSpeed 하강 속도
  * @param isJumpingUp 점프중 판단 변수 ( 상승 )
  * @param isJumpingDown 점프중 판단 변수 ( 하강 )
  * @param jumpingPower 점프력 ( 점프할 높이 )
  * @param jumpingHeight 점프할 최종 목적지 ( 현재 위치 - ( 점프력 * 속도 ) )
- * @param jumpingArray 점프중 상승 시 위치 값들을 기록할 배열 ( 하강 시 반대로 실행하기 위함 )
  */
 export default class Mario {
   private ctx: CanvasRenderingContext2D;
@@ -34,13 +38,16 @@ export default class Mario {
   private speed: number;
   private count: number;
   private direction: boolean;
+  private prevPos: Position;
+  private minFallSpeed: number;
+  private maxFallSpeed: number;
+  private fallSpeed: number;
 
   // 점프
   private isJumpingUp: boolean;
   private isJumpingDown: boolean;
   private jumpingPower: number;
   private jumpingHeight: number;
-  private jumpingArray: number[];
 
   constructor(ctx: CanvasRenderingContext2D, position: Position) {
     const image = new Image();
@@ -61,13 +68,16 @@ export default class Mario {
     this.speed = 1;
     this.count = 0;
     this.direction = true;
+    this.prevPos = { x: 0, y: 0 };
+    this.minFallSpeed = 4;
+    this.maxFallSpeed = 12;
+    this.fallSpeed = this.minFallSpeed;
 
     // 점프
     this.isJumpingUp = false;
     this.isJumpingDown = false;
     this.jumpingPower = 300;
     this.jumpingHeight = 0;
-    this.jumpingArray = [];
 
     // 이미지 로드 완료 시 그리기
     image.addEventListener("load", () => {
@@ -93,10 +103,11 @@ export default class Mario {
   }
 
   /**
-   * 캐릭터 이동 ( 좌표만 이동... 렌더링 X )
+   * 캐릭터 이동
+   * 좌표 이동 및 렌더링 이미지 변경 ( 렌더링 X )
    */
   move() {
-    // 이동이 아니라면
+    // 현재 방향키를 누르고 있지 않다면
     if (
       !(
         this.keys.hasOwnProperty("ArrowLeft") ||
@@ -150,7 +161,49 @@ export default class Mario {
   }
 
   /**
-   * 캐릭터 점프 ( 좌표만 이동... 렌더링 X )
+   * 캐릭터 엎드리기
+   * 렌더링 이미지 변경 ( 렌더링 X )
+   */
+  crawl() {
+    // 아래 방향키를 누르고 있지 않다면
+    if (!this.keys.hasOwnProperty("ArrowDown")) return;
+
+    // 작은 마리오라면
+    if (this.status === "small") {
+      this.imagePosition.x = marioKeycode.sWidth * marioKeycode.crawl;
+
+      // 아래 방향키를 누르고 첫 수행인 경우
+      if (this.imageSize.h !== marioKeycode.crawlHeight) {
+        this.position.y += marioKeycode.sHeight - marioKeycode.crawlHeight;
+      }
+    }
+  }
+
+  /**
+   * 캐릭터 일어서기
+   * 렌더링 이미지 변경 ( 렌더링 X )
+   */
+  stand(key: string) {
+    // 우측을 보고 있다면
+    if (this.direction) {
+      this.imagePosition.x = marioKeycode.stand * marioKeycode.sWidth;
+      this.imagePosition.y = marioKeycode.right;
+    }
+    // 좌측을 보고 있다면
+    else {
+      this.imagePosition.x = marioKeycode.stand * marioKeycode.sWidth;
+      this.imagePosition.y = marioKeycode.left;
+    }
+
+    // 점프중이 아니라면
+    if (key === "ArrowDown" && !this.isJumping()) {
+      this.position.y -= marioKeycode.sHeight - marioKeycode.crawlHeight;
+    }
+  }
+
+  /**
+   * 캐릭터 점프
+   * 좌표 이동 및 렌더링 이미지 변경 ( 렌더링 X )
    */
   jump() {
     // 점프 키를 누른 경우
@@ -171,32 +224,10 @@ export default class Mario {
         this.jumpingHeight &&
         this.jumpingHeight < this.position.y
       ) {
-        const delta = (this.position.y - this.jumpingHeight) / 20 + 4;
+        // 점점 느려지는 효과 적용
+        const delta =
+          (this.position.y - this.jumpingHeight) / 20 + this.fallSpeed + 2;
         this.position.y -= delta;
-
-        this.jumpingArray.push(delta);
-
-        // 렌더링할 이미지 지정
-        // 달리는 중이라면
-        if (this.speed !== 1) {
-          // 달리기 점프
-          this.imagePosition.x = marioKeycode.sWidth * marioKeycode.jumpRun;
-        }
-        // 걷는 중이라면
-        else {
-          // 점프 상승
-          this.imagePosition.x = marioKeycode.sWidth * marioKeycode.jumpUp;
-        }
-
-        if (this.jumpingHeight > this.position.y) {
-          this.jumpingHeight += this.jumpingPower;
-          this.isJumpingUp = false;
-          this.isJumpingDown = true;
-        }
-      }
-      // 점프중 ( 하강 )
-      if (this.isJumpingDown && this.jumpingArray.length !== 0) {
-        this.position.y += this.jumpingArray.pop() || 1;
 
         // 렌더링할 이미지 지정
         // 달리는 중이라면
@@ -206,52 +237,111 @@ export default class Mario {
         }
         // 걷는 중이라면
         else {
-          // 점프 하강
-          this.imagePosition.x = marioKeycode.sWidth * marioKeycode.JumpDown;
+          // 점프 상승
+          this.imagePosition.x = marioKeycode.sWidth * marioKeycode.jumpUp;
         }
 
-        if (this.jumpingArray.length === 0) {
-          this.isJumpingDown = false;
-          delete this.keys.Space;
-
-          // 하강 완료 시 기본 이미지로 변경
-          this.imagePosition.x = marioKeycode.sWidth * marioKeycode.right;
-        }
-      }
-    }
-  }
-
-  /**
-   * 캐릭터 엎드리기
-   */
-  crawl() {
-    if (this.status === "small") {
-      if (this.keys.hasOwnProperty("ArrowDown")) {
-        this.imagePosition.x = marioKeycode.sWidth * marioKeycode.crawl;
-
-        // 아래 방향키를 누르고 첫 수행인 경우
-        if (this.imageSize.h !== marioKeycode.crawlHeight) {
-          this.position.y += marioKeycode.sHeight - marioKeycode.crawlHeight;
+        // 점프 상승의 끝
+        if (this.jumpingHeight > this.position.y) {
+          this.fallSpeed = this.minFallSpeed;
+          this.isJumpingUp = false;
+          this.isJumpingDown = true;
         }
       }
     }
   }
 
   /**
-   * 캐릭터 일어서기
+   * 하강
    */
-  stand(key: string) {
-    if (this.direction) {
-      this.imagePosition.x = marioKeycode.stand * marioKeycode.sWidth;
-      this.imagePosition.y = marioKeycode.right;
-    } else {
-      this.imagePosition.x = marioKeycode.stand * marioKeycode.sWidth;
-      this.imagePosition.y = marioKeycode.left;
+  fall() {
+    // 땅에 닿은 시점에 서 있는 이미지 적용
+    if (this.isJumpingDown && this.prevPos.y - this.position.y >= 0) {
+      this.fallSpeed = this.minFallSpeed;
+      this.imagePosition.x = marioKeycode.sWidth * marioKeycode.right;
     }
 
-    if (key === "ArrowDown" && !this.isJumping()) {
-      this.position.y -= marioKeycode.sHeight - marioKeycode.crawlHeight;
+    // 현재 하강중인지 판단
+    this.isJumpingDown = this.prevPos.y - this.position.y < 0;
+
+    // 하강중
+    if (this.isJumpingDown) {
+      // 점점 빨리 하강하지만 최대 하강속도는 유지
+      this.fallSpeed += 0.1;
+      if (this.fallSpeed >= this.maxFallSpeed) {
+        this.fallSpeed = this.maxFallSpeed;
+      }
+      // 렌더링할 이미지 지정
+      // 달리는 중이라면
+      if (this.isRunning()) {
+        // 달리기 점프
+        this.imagePosition.x = marioKeycode.sWidth * marioKeycode.jumpRun;
+      }
+      // 걷는 중이라면
+      else {
+        // 점프 하강
+        this.imagePosition.x = marioKeycode.sWidth * marioKeycode.JumpDown;
+      }
     }
+  }
+
+  /**
+   * 블럭과 충돌 여부 판단
+   * @param blocks 블럭 배열
+   */
+  isCollision(blocks: Block[]) {
+    // 캐릭터의 상하좌우 좌표
+    const { x, y } = this.position;
+    const { w, h } = this.size;
+    const cLeft = x;
+    const cRight = x + w;
+    const cTop = y;
+    const cBottom = y + h;
+
+    blocks.forEach((block) => {
+      // 블럭의 상하좌우 좌표
+      const { x, y } = block.getPosition();
+      const { w, h } = block.getSize();
+      const bLeft = x;
+      const bRight = x + w;
+      const bTop = y;
+      const bBottom = y + h;
+
+      // 충돌인 경우 이전 좌표로 돌아가기 ( 즉, 가로막혀서 움직일 수 없는 효과를 보여줌 )
+      if (
+        bLeft <= cRight &&
+        bRight >= cLeft &&
+        bTop <= cBottom &&
+        bBottom >= cTop
+      ) {
+        // "좌 -> 우" 충돌인 경우
+        const isLeft = this.prevPos.x + this.size.w - bLeft;
+        if (
+          isLeft < 0 &&
+          bTop < this.position.y + this.size.h - this.fallSpeed - 1
+        ) {
+          this.position.x -= 7 * this.speed;
+          return;
+        }
+        // "우 -> 좌" 충돌인 경우
+        const isRight = bRight - this.prevPos.x;
+        if (
+          isRight < 0 &&
+          bTop < this.position.y + this.size.h - this.fallSpeed - 1
+        ) {
+          this.position.x += 7 * this.speed;
+          return;
+        }
+        // // "아래 -> 위" 충돌인 경우
+        // const isBottom = bBottom - this.prevPos.y;
+        // if (isBottom < 0) {
+        //   this.position.y += 7 * this.speed;
+        //   return;
+        // }
+        // "위 -> 아래" 충돌인 경우
+        this.position.y = bTop - this.size.h;
+      }
+    });
   }
 
   /**
@@ -288,10 +378,47 @@ export default class Mario {
   }
 
   /**
+   *
+   */
+  execute(blocks: Block[]) {
+    // 이동 처리
+    this.move();
+    // 얻드려 처리
+    this.crawl();
+    // 점프(상승) 처리
+    this.jump();
+    // 충돌처리
+    this.isCollision(blocks);
+    // 하강처리
+    this.fall();
+    // 렌더링
+    this.draw();
+
+    // 이전 좌표 기록 ( 충돌의 방향을 알아내기 위함 )
+    this.prevPos.x = this.position.x;
+    this.prevPos.y = this.position.y;
+
+    // 일단 하강하고 밑에 블럭이 있다면 충돌에서 검사 후 블럭위로 올려줌
+    this.position.y += this.fallSpeed;
+
+    // 반복 횟수
+    this.addCount(1);
+  }
+
+  /**
    * 화면 사이즈 변경으로 인한 캐릭터 위치 변화
    */
   resize() {
     this.position.y = innerHeight - (innerHeight / 6.8 + this.size.h);
+  }
+
+  // is jumping
+  isJumping() {
+    return this.isJumpingUp || this.isJumpingDown;
+  }
+  // is running
+  isRunning() {
+    return this.speed !== 1;
   }
 
   // ===== getter / setter =====
@@ -332,13 +459,5 @@ export default class Mario {
   }
   addCount(number: number) {
     this.count += number;
-  }
-  // is jumping
-  isJumping() {
-    return this.isJumpingUp || this.isJumpingDown;
-  }
-  // is running
-  isRunning() {
-    return this.speed !== 1;
   }
 }
