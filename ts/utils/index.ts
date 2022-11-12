@@ -23,3 +23,30 @@ export const marioKeycode = {
   jumpRun: 6,
   crawl: 7,
 };
+
+export const blockKeycode = {
+  width: 53,
+  height: 53,
+
+  leftTop: 0,
+  top: 1,
+  rightTop: 2,
+  left: 3,
+  mid: 4,
+  right: 5,
+  leftBottom: 6,
+  bottom: 7,
+  rightBottom: 8,
+  leftTopAngle: 9,
+  rightTopAngle: 10,
+  leftBottomAngle: 11,
+  rightBottomAngle: 12,
+
+  // >>> 나머지 이름 정하기
+  solo: 13,
+  soloLeft: 14,
+  soloMid: 15,
+  soloRight: 16,
+};
+
+export const initialBackground = () => {};

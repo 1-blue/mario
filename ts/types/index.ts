@@ -26,3 +26,30 @@ export type Keys = {
     startTime: number;
   };
 };
+
+/**
+ * 블럭 타입
+ */
+export type BlockType =
+  | "leftTop"
+  | "top"
+  | "rightTop"
+  | "left"
+  | "mid"
+  | "right"
+  | "leftBottom"
+  | "bottom"
+  | "rightBottom"
+  | "leftTopAngle"
+  | "rightTopAngle"
+  | "leftBottomAngle"
+  | "rightBottomAngle"
+  | "solo"
+  | "soloLeft"
+  | "soloMid"
+  | "soloRight";
+
+/**
+ * 맵 타임
+ */
+export type MapType = "stairs";

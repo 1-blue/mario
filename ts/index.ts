@@ -29,6 +29,14 @@ const resizeCanvas = ($canvas: HTMLCanvasElement) => {
     y: 200,
   });
 
+  // 블럭관련 처리
+  Block.ctx = ctx;
+  const blocks: Block[] = [];
+
+  // >>> 맵 관리 클래스로 바꾸기
+  // 계단맵 생성
+  Block.CreateMap("stairs", blocks);
+
   // 키 누름 시작
   window.addEventListener("keydown", (e) => {
     const key = e.key === " " ? "Space" : e.key;
@@ -103,6 +111,9 @@ const resizeCanvas = ($canvas: HTMLCanvasElement) => {
 
     // 배경 색칠
     background.draw();
+
+    // >>> 블럭
+    blocks.forEach((block) => block.draw());
 
     // 마리오 실행
     mario.execute(blocks);
