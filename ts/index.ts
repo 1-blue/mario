@@ -1,15 +1,14 @@
+// class
 import Background from "./class/Background";
-import Mario from "./class/Mario";
+import MapManager from "./class/MapManager";
 import Block from "./class/Block";
+import Mario from "./class/Mario";
 
-/**
- * 2022/11/07 - 캔버스 사이즈 지정 - by 1-blue
- * @param {*} $canvas canvas element
- */
-const resizeCanvas = ($canvas: HTMLCanvasElement) => {
-  $canvas.width = innerWidth;
-  $canvas.height = innerHeight;
-};
+// util
+import { resizeCanvas } from "./utils/index";
+
+// type
+import type { KeyType } from "./types/index";
 
 (() => {
   // canvas
@@ -29,20 +28,33 @@ const resizeCanvas = ($canvas: HTMLCanvasElement) => {
     y: 200,
   });
 
-  // 블럭관련 처리
+  // 맵 관리자
+  const mapManager = new MapManager();
+
+  // 블럭
   Block.ctx = ctx;
   const blocks: Block[] = [];
 
-  // >>> 맵 관리 클래스로 바꾸기
   // 계단맵 생성
-  Block.CreateMap("stairs", blocks);
+  mapManager.CreateMap("stairs", blocks);
 
   // 키 누름 시작
   window.addEventListener("keydown", (e) => {
-    const key = e.key === " " ? "Space" : e.key;
+    // >>> 가능하면 로직 수정
+    if (
+      !(
+        e.key === "ArrowRight" ||
+        e.key === "ArrowLeft" ||
+        e.key === "ArrowDown" ||
+        e.key === " "
+      )
+    )
+      return;
+    const key = (e.key === " " ? "Space" : e.key) as KeyType;
 
-    // 이미 같은 키를 누르고 있다면
-    if (mario.getKeys().hasOwnProperty(key)) return;
+    if (mario.getKeys().hasOwnProperty(key))
+      // 이미 같은 키를 누르고 있다면
+      return;
 
     // 점프중에 다시 점프 금지
     if (key === "Space" && mario.isJumping()) return;
@@ -50,15 +62,12 @@ const resizeCanvas = ($canvas: HTMLCanvasElement) => {
     // 점프중이라면 엎드리기 금지
     if (key === "ArrowDown" && mario.isJumping()) return;
 
-    // // >>> 좌/우 방향키 동시 입력 금지
-    // if (key === "ArrowRight" && mario.getKeys().hasOwnProperty("ArrowLeft")) {
-    //   delete mario.getKeys()["ArrowLeft"];
-    // } else if (
-    //   key === "ArrowLeft" &&
-    //   mario.getKeys().hasOwnProperty("ArrowRight")
-    // ) {
-    //   delete mario.getKeys()["ArrowRight"];
-    // }
+    // 좌/우 방향키 동시 입력 금지
+    if (key === "ArrowRight" && mario.getKeys().ArrowLeft) {
+      delete mario.getKeys()["ArrowLeft"];
+    } else if (key === "ArrowLeft" && mario.getKeys().ArrowRight) {
+      delete mario.getKeys()["ArrowRight"];
+    }
 
     // 현재 누른 키를 등록
     mario.setKeys({ [key]: { startTime: Date.now() } });
@@ -66,9 +75,17 @@ const resizeCanvas = ($canvas: HTMLCanvasElement) => {
 
   // 키 누름 중지
   window.addEventListener("keyup", (e) => {
-    const key = e.key === " " ? "Space" : e.key;
-
-    mario.setIsNext(true);
+    // >>> 가능하면 로직 수정
+    if (
+      !(
+        e.key === "ArrowRight" ||
+        e.key === "ArrowLeft" ||
+        e.key === "ArrowDown" ||
+        e.key === " "
+      )
+    )
+      return;
+    const key = (e.key === " " ? "Space" : e.key) as KeyType;
 
     // 걷기 중지 및 엎드리기를 중지하면 서있는 모션으로 변경
     if (key.includes("Arrow")) {
@@ -78,44 +95,17 @@ const resizeCanvas = ($canvas: HTMLCanvasElement) => {
 
     // 이전에 눌렀던 기록 제거
     delete mario.getKeys()[key];
-
-    // 초기화
-    mario.reset();
   });
 
   // 애니메이션 실행 함수
   const startAnimation = () => {
-    // 현재 누르고 있는 키들
-    const keys = mario.getKeys();
-
-    // 좌/우측중 하나를 누르고 있다면 누른 시점의 값을 얻음
-    const startTime =
-      keys?.ArrowRight?.startTime || keys?.ArrowLeft?.startTime || Date.now();
-
-    // 계속 클릭 시 가속 ( >>> 단, 점프중 가속 금지 )
-    if (Date.now() - startTime > 1000) mario.setSpeed(1.5);
-    else mario.setSpeed(1);
-
-    // 좌/우측을 계속 누르고 있다면
-    // 가속도가 붙었다면 달리기 이미지 전환 속도 up
-    if ((keys?.ArrowRight || keys?.ArrowLeft) && mario.getSpeed() === 1.5) {
-      mario.toggleIsNext();
-    }
-    // 가속도가 붙기 전이라면 4번 화면을 그릴 때마다 이미지 전환 ( 이미지 변환의 주기를 줄이면 빨리 달리는 느낌 )
-    else if (
-      (keys?.ArrowRight || keys?.ArrowLeft) &&
-      mario.getCount() % 4 === 0
-    ) {
-      mario.toggleIsNext();
-    }
-
-    // 배경 색칠
+    // 배경 렌더링
     background.draw();
 
-    // >>> 블럭
+    // 블럭 렌더링
     blocks.forEach((block) => block.draw());
 
-    // 마리오 실행
+    // 마리오 키보드 이벤트 처리 및 렌더링
     mario.execute(blocks);
 
     // 애니메이션 실행

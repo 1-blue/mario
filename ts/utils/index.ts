@@ -1,19 +1,29 @@
 /**
- * 작은 마리오 키코드 ( 이미지 스프라이트를 사용하기 때문에 어느 위치에 어떤 이미지인지 매핑해줄 테이블이 필요 )
+ * 캔버스 사이즈 지정
+ * @param {*} $canvas canvas element
+ */
+export const resizeCanvas = ($canvas: HTMLCanvasElement) => {
+  $canvas.width = innerWidth;
+  $canvas.height = innerHeight;
+};
+
+/**
+ * 마리오 키코드
+ * ( 이미지 스프라이트를 사용하기 때문에 어느 위치에 어떤 이미지인지 매핑해줄 테이블이 필요 )
  */
 export const marioKeycode = {
-  // 작은 마리오 크기
-  sWidth: 50,
-  sHeight: 70,
+  // 스프라이트에서 작은 마리오 크기
+  sWidth: 46,
+  sHeight: 64,
 
   // 엎드린 마리오 크기
-  crawlHeight: 50,
+  crawlHeight: 46,
 
-  // 마리오 위치 ( 우측 스프라이트는 0 ~ 70, 좌측 스프라이트는 70 ~ 140 )
+  // 마리오 이미지 y위치
   right: 0,
-  left: 70,
+  left: 64,
 
-  // 각 모션의 순서 ( x: "크기 * 순서", y: 위치 => 원하는 이미지 )
+  // 마리오 이미지 x위치
   stand: 0,
   walk: 1,
   runStand: 2,
@@ -24,10 +34,18 @@ export const marioKeycode = {
   crawl: 7,
 };
 
+/**
+ * 블럭 키코드
+ */
 export const blockKeycode = {
+  // 스프라이트에서 블럭 크기
   width: 53,
   height: 53,
 
+  // 블럭 이미지 y위치
+  default: 0,
+
+  // 블럭 이미지 x위치
   leftTop: 0,
   top: 1,
   rightTop: 2,
@@ -41,12 +59,10 @@ export const blockKeycode = {
   rightTopAngle: 10,
   leftBottomAngle: 11,
   rightBottomAngle: 12,
-
-  // >>> 나머지 이름 정하기
-  solo: 13,
-  soloLeft: 14,
-  soloMid: 15,
-  soloRight: 16,
+  line: 13,
+  topArc: 14,
+  rightArc: 15,
+  bottomArc: 16,
+  leftArc: 17,
+  circle: 18,
 };
-
-export const initialBackground = () => {};

@@ -1,3 +1,5 @@
+import { blockKeycode } from "../utils/index";
+
 /**
  * 그려질 캐릭터의 위치 / 이미지 스프라이트에서 그릴 이미지 위치 타입
  */
@@ -21,8 +23,9 @@ export type CharacterStatus = "small" | "long";
 /**
  * 입력 받은 키의 타입
  */
+export type KeyType = "ArrowRight" | "ArrowLeft" | "ArrowDown" | "Space";
 export type Keys = {
-  [key: string]: {
+  [key in KeyType]?: {
     startTime: number;
   };
 };
@@ -30,26 +33,16 @@ export type Keys = {
 /**
  * 블럭 타입
  */
-export type BlockType =
-  | "leftTop"
-  | "top"
-  | "rightTop"
-  | "left"
-  | "mid"
-  | "right"
-  | "leftBottom"
-  | "bottom"
-  | "rightBottom"
-  | "leftTopAngle"
-  | "rightTopAngle"
-  | "leftBottomAngle"
-  | "rightBottomAngle"
-  | "solo"
-  | "soloLeft"
-  | "soloMid"
-  | "soloRight";
+export type BlockType = "default";
+/**
+ * 블럭 형태
+ */
+export type BlockShape = Exclude<
+  keyof typeof blockKeycode,
+  "width" | "height" | "default"
+>;
 
 /**
- * 맵 타임
+ * 맵 종류
  */
 export type MapType = "stairs";
