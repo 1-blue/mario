@@ -2,10 +2,12 @@
 import Block from "./Block";
 
 // type
-import type { MapType } from "../types/index";
+import type { MapType } from "../../types/index";
 
 /**
  * 맵 생성과 관련된 모든 처리를 관리할 관리자 클래스 ( 싱글톤 )
+ *
+ * @param instance ( static ) 인스턴스
  */
 export default class MapManager {
   static instance: MapManager;
@@ -102,8 +104,8 @@ export default class MapManager {
           case 12:
           case 13:
             break;
+
           default:
-            blocks.push(new Block({ x: i * 100, y: 700 }, "top"));
             break;
         }
       });
@@ -139,7 +141,6 @@ export default class MapManager {
           case 13:
             break;
           default:
-            blocks.push(new Block({ x: i * 100, y: 600 }, "top"));
             break;
         }
       });
@@ -173,7 +174,6 @@ export default class MapManager {
           case 13:
             break;
           default:
-            blocks.push(new Block({ x: i * 100, y: 500 }, "top"));
             break;
         }
       });
@@ -203,11 +203,9 @@ export default class MapManager {
           case 13:
             break;
           default:
-            blocks.push(new Block({ x: i * 100, y: 400 }, "top"));
             break;
         }
       });
-
     // 보너스 ( 우측 상단 블럭 )
     blocks.push(new Block({ x: 1000, y: 200 }, "leftArc"));
     blocks.push(new Block({ x: 1100, y: 200 }, "line"));

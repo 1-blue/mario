@@ -8,61 +8,93 @@ export const resizeCanvas = ($canvas: HTMLCanvasElement) => {
 };
 
 /**
- * 마리오 키코드
+ * 플레이어 키 테이블
  * ( 이미지 스프라이트를 사용하기 때문에 어느 위치에 어떤 이미지인지 매핑해줄 테이블이 필요 )
  */
-export const marioKeycode = {
-  // 스프라이트에서 작은 마리오 크기
-  sWidth: 46,
-  sHeight: 64,
+export const playerKeyTable = {
+  // 마리오
+  mario: {
+    // 작은
+    small: {
+      // 이미지의 "width"와 "height"
+      width: 46,
+      height: 64,
+      crawlHeight: 46,
 
-  // 엎드린 마리오 크기
-  crawlHeight: 46,
+      // 이미지의 y위치
+      right: 0 * 69,
+      left: 1 * 69,
 
-  // 마리오 이미지 y위치
-  right: 0,
-  left: 64,
+      // 이미지 x위치
+      stand: 0 * 46,
+      walk: 1 * 46,
+      runStand: 2 * 46,
+      run: 3 * 46,
+      jumpUp: 4 * 46,
+      JumpDown: 5 * 46,
+      jumpRun: 6 * 46,
+      crawl: 7 * 46,
+      die: 8 * 46,
+    },
 
-  // 마리오 이미지 x위치
-  stand: 0,
-  walk: 1,
-  runStand: 2,
-  run: 3,
-  jumpUp: 4,
-  JumpDown: 5,
-  jumpRun: 6,
-  crawl: 7,
+    // 큰
+    long: {},
+  },
 };
 
 /**
- * 블럭 키코드
+ * 적 키 테이블
  */
-export const blockKeycode = {
-  // 스프라이트에서 블럭 크기
-  width: 53,
-  height: 53,
+export const enemyKeyTable = {
+  // 굼바
+  goomba: {
+    // 이미지의 "width"와 "height"
+    width: 52,
+    height: 52,
+    dieHeight: 29,
 
-  // 블럭 이미지 y위치
-  default: 0,
+    // 이미지 y위치
+    yPos: 0,
 
-  // 블럭 이미지 x위치
-  leftTop: 0,
-  top: 1,
-  rightTop: 2,
-  left: 3,
-  mid: 4,
-  right: 5,
-  leftBottom: 6,
-  bottom: 7,
-  rightBottom: 8,
-  leftTopAngle: 9,
-  rightTopAngle: 10,
-  leftBottomAngle: 11,
-  rightBottomAngle: 12,
-  line: 13,
-  topArc: 14,
-  rightArc: 15,
-  bottomArc: 16,
-  leftArc: 17,
-  circle: 18,
+    // 이미지 x위치
+    left: 0 * 52,
+    right: 1 * 52,
+    die: 2 * 52,
+  },
+};
+
+/**
+ * 블록 키코드
+ */
+export const blockKeyTable = {
+  // 일반 블록
+  normal: {
+    // 이미지의 "width"와 "height"
+    width: 53,
+    height: 53,
+
+    // 이미지 y위치
+    yPos: 0,
+
+    // 이미지 x위치
+    leftTop: 0 * 53,
+    top: 1 * 53,
+    rightTop: 2 * 53,
+    left: 3 * 53,
+    mid: 4 * 53,
+    right: 5 * 53,
+    leftBottom: 6 * 53,
+    bottom: 7 * 53,
+    rightBottom: 8 * 53,
+    leftTopAngle: 9 * 53,
+    rightTopAngle: 10 * 53,
+    leftBottomAngle: 11 * 53,
+    rightBottomAngle: 12 * 53,
+    line: 13 * 53,
+    topArc: 14 * 53,
+    rightArc: 15 * 53,
+    bottomArc: 16 * 53,
+    leftArc: 17 * 53,
+    circle: 18 * 53,
+  },
 };

@@ -1,25 +1,31 @@
-import { blockKeycode } from "../utils/index";
-
 /**
- * 그려질 캐릭터의 위치 / 이미지 스프라이트에서 그릴 이미지 위치 타입
+ * 켄버스에 그려질 오브젝트 위치 타입
  */
 export type Position = {
   x: number;
   y: number;
 };
 /**
- * 그려질 캐릭터의 크기 / 이미지 스프라이트에서 캐릭터의 크기
+ * 이미지 스프라이트에서 이미지의 위치 타입
+ */
+export type ImagePosition = {
+  ix: number;
+  iy: number;
+};
+/**
+ * 캔버스에 그려질 오브젝트 크기 타입
  */
 export type Size = {
   w: number;
   h: number;
 };
-
 /**
- * 캐릭터 타입 ( 작은 마리오, 큰 마리오 )
+ * 이미지 스프라이트에서 이미지의 크기 타입
  */
-export type CharacterStatus = "small" | "long";
-
+export type ImageSize = {
+  iw: number;
+  ih: number;
+};
 /**
  * 입력 받은 키의 타입
  */
@@ -30,19 +36,15 @@ export type Keys = {
   };
 };
 
-/**
- * 블럭 타입
- */
-export type BlockType = "default";
-/**
- * 블럭 형태
- */
-export type BlockShape = Exclude<
-  keyof typeof blockKeycode,
-  "width" | "height" | "default"
->;
+export type {
+  EmenyKinds,
+  GoombaKeyTable,
+  GoombaState,
+  FallSpeed,
+  Jumping,
+  PlayerKinds,
+  MarioStatus,
+  SmallMarioKeyTable,
+} from "./charactor";
 
-/**
- * 맵 종류
- */
-export type MapType = "stairs";
+export type { BlockKeyTable, BlockShape, BlockType, MapType } from "./map";

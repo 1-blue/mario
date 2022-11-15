@@ -1,5 +1,8 @@
 /**
  * 배경화면 클래스 ( + 싱글톤 )
+ *
+ * @param instance ( static ) 인스턴스
+ *
  * @param ctx 배경화면을 그릴 "canvas"의 "context"
  * @param image 배경화면 이미지를 가진 이미지 객체
  */
