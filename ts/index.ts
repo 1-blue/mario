@@ -2,8 +2,8 @@
 import Background from "./class/Map/Background";
 import MapManager from "./class/Map/MapManager";
 import Block from "./class/Map/Block";
-import Mario from "./class/Charactor/Player/Mario";
-import Goomba from "./class/Charactor/Enemy/Goomba";
+import Mario from "./class/Character/Player/Mario";
+import Goomba from "./class/Character/Enemy/Goomba";
 
 // util
 import { resizeCanvas } from "./utils/index";
@@ -94,7 +94,7 @@ import type { KeyType } from "./types/index";
     const key = (e.key === " " ? "Space" : e.key) as KeyType;
 
     // 걷기 중지 및 엎드리기를 중지하면 서있는 모션으로 변경
-    if (key.includes("ArrowDown")) mario.stand(key);
+    if (key.includes("Arrow")) mario.stand(key);
 
     // 이전에 눌렀던 기록 제거
     delete mario.keys[key];

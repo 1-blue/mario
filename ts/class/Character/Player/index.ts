@@ -1,5 +1,5 @@
 // class
-import Charactor from "../index";
+import Character from "../index";
 import Block from "../../Map/Block";
 import Enemy from "../Enemy/index";
 
@@ -23,7 +23,7 @@ import type {
  * @param _keys 현재 입력된 키
  * @param jumping 점프 처리에 필요한 값들
  */
-export default abstract class Player extends Charactor {
+export default abstract class Player extends Character {
   protected kinds: PlayerKinds;
   protected isNext: boolean;
   protected _keys: Keys;
@@ -51,6 +51,7 @@ export default abstract class Player extends Charactor {
   protected abstract crawl(): void;
   protected abstract jump(): void;
   protected abstract fall(): void;
+  protected abstract draw(): void;
 
   /**
    * 충돌 처리

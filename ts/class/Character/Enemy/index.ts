@@ -1,12 +1,11 @@
 // class
-import Charactor from "../index";
+import Character from "../index";
 import Player from "../Player/index";
 import Block from "../../Map/Block";
 
 // type
 import type {
   EmenyKinds,
-  GoombaState,
   ImagePosition,
   ImageSize,
   Position,
@@ -18,12 +17,10 @@ import type {
  * ( 굼바 등 )
  *
  * @param kinds 종류 ( 굼바 등 )
- * @param state 상태 ( 왼발, 오른발 등 )
- * @param dir 이동 방향
+ 
  */
-export default abstract class Enemy extends Charactor {
+export default abstract class Enemy extends Character {
   protected kinds: EmenyKinds;
-  protected state: GoombaState;
 
   /**
    * "Enemy class"의 생성자
@@ -46,7 +43,6 @@ export default abstract class Enemy extends Charactor {
     super(pos, iPos, size, iSize, dir);
 
     this.kinds = kinds;
-    this.state = dir ? "right" : "left";
   }
 
   protected abstract move(): void;

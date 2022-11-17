@@ -32,10 +32,10 @@ import type {
  *
  * @param count 렌더링 속도 조절을 위한 변수
  */
-export default abstract class Charactor {
+export default abstract class Character {
   // 정적 변수
-  static ctx: CanvasRenderingContext2D;
-  static image: HTMLImageElement;
+  protected static _ctx: CanvasRenderingContext2D;
+  protected static image: HTMLImageElement;
 
   // 렌더링 좌표 관련
   protected pos: Position;
@@ -94,9 +94,9 @@ export default abstract class Charactor {
    * 적과 충돌 시 방향에 따라 죽이거나 / 죽음
    *
    * @param blocks 그려진 블록
-   * @param chractor 하위에서 메서드 재정의 시 사용하는 인수
+   * @param character 하위에서 메서드 재정의 시 사용하는 인수
    */
-  protected collision(blocks: Block[], chractor: Player | Enemy[]) {
+  protected collision(blocks: Block[], character: Player | Enemy[]) {
     // 캐릭터의 상하좌우 좌표
     const { x, y } = this.pos;
     const { w, h } = this.size;
@@ -107,8 +107,8 @@ export default abstract class Charactor {
 
     blocks.forEach((block) => {
       // 블럭의 상하좌우 좌표
-      const { x, y } = block.getPosition();
-      const { w, h } = block.getSize();
+      const { x, y } = block.position;
+      const { w, h } = block.size;
       const bLeft = x;
       const bRight = x + w;
       const bTop = y;
@@ -168,4 +168,16 @@ export default abstract class Charactor {
    */
   public abstract process(blocks: Block[], player: Player): void;
   public abstract process(blocks: Block[], enemies: Enemy[]): void;
+
+  // getter / setter
+
+  /**
+   * >>>
+   */
+  public static get ctx() {
+    return this._ctx;
+  }
+  public static set ctx(ctx: CanvasRenderingContext2D) {
+    this._ctx = ctx;
+  }
 }

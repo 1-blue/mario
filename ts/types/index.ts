@@ -39,11 +39,12 @@ export type Keys = {
 export type {
   EmenyKinds,
   GoombaKeyTable,
-  GoombaState,
+  GoombaMotion,
   FallSpeed,
   Jumping,
   PlayerKinds,
-  MarioStatus,
+  MarioState,
+  SmallMarioMotion,
   SmallMarioKeyTable,
 } from "./charactor";
 

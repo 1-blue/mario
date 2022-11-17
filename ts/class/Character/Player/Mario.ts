@@ -7,20 +7,23 @@ import { playerKeyTable } from "../../../utils/index";
 // type
 import type {
   SmallMarioKeyTable,
-  MarioStatus,
+  MarioState,
   Position,
   Size,
+  SmallMarioMotion,
 } from "../../../types/index";
 
 /**
  * 마리오 클래스
  *
  * @param keyTable 마리오 이미지 렌더링 관련 값을 갖는 테이블
- * @param status 현재 마리오 상태 ( "small" | "long" 등 )
+ * @param state 현재 마리오 상태 ( "small", "long" 등 )
+ * @param motion 마리오 몸짓 ( 행동 ) ( "walk", "run", "crawl" 등 )
  */
 export default class Mario extends Player {
   private keyTable: SmallMarioKeyTable;
-  private status: MarioStatus;
+  private state: MarioState;
+  private motion: SmallMarioMotion;
 
   constructor(pos: Position, size: Size, dir: boolean = true) {
     super(
@@ -38,15 +41,15 @@ export default class Mario extends Player {
       dir
     );
 
-    this.status = "small";
+    this.state = "small";
+    this.motion = "stand";
+    this.keyTable = playerKeyTable.mario[this.state];
 
     // 처음만 이미지 로딩
     if (!Mario.image) {
       Mario.image = new Image();
       Mario.image.src = "./assets/images/mario.png";
     }
-
-    this.keyTable = playerKeyTable.mario[this.status];
 
     // 이미지 로드 완료 시 그리기
     Mario.image.addEventListener("load", () => {
@@ -114,13 +117,10 @@ export default class Mario extends Player {
     if (!this.keys.ArrowLeft && !this.keys.ArrowRight) return;
 
     // 작은 마리오
-    if (this.status === "small") {
+    if (this.state === "small") {
       // 우측 이동
       if (this.keys.ArrowRight) {
         this.dir = true;
-
-        // 보여줄 이미지의 x 결정 ( 우측을 보는 이미지 )
-        this.iPos.iy = this.keyTable.right;
 
         // 엎드린 상태라면 움직임 X ( 단, 공중에서는 움직이기 가능 )
         if (this.keys.ArrowDown && !this.isJumping()) return;
@@ -132,9 +132,6 @@ export default class Mario extends Player {
       else if (this.keys.ArrowLeft) {
         this.dir = false;
 
-        // 보여줄 이미지의 y 결정 ( 좌측을 보는 이미지 )
-        this.iPos.iy = this.keyTable.left;
-
         // 엎드린 상태라면 움직임 X ( 단, 공중에서는 움직이기 가능 )
         if (this.keys.ArrowDown && !this.isJumping()) return;
 
@@ -143,13 +140,9 @@ export default class Mario extends Player {
       }
 
       // 달리는 중이라면
-      if (this.isRunning()) {
-        this.iPos.ix = this.isNext ? this.keyTable.runStand : this.keyTable.run;
-      }
+      if (this.isRunning()) this.motion = this.isNext ? "runStand" : "run";
       // 걷는 중이라면
-      else {
-        this.iPos.ix = this.isNext ? this.keyTable.stand : this.keyTable.walk;
-      }
+      else this.motion = this.isNext ? "stand" : "walk";
     }
   }
 
@@ -159,17 +152,8 @@ export default class Mario extends Player {
    */
   public stand(key: string) {
     // 작은 마리오라면
-    if (this.status === "small") {
-      // 우측을 보고 있다면
-      if (this.dir) {
-        this.iPos.ix = this.keyTable.stand;
-        this.iPos.iy = this.keyTable.right;
-      }
-      // 좌측을 보고 있다면
-      else {
-        this.iPos.ix = this.keyTable.stand;
-        this.iPos.iy = this.keyTable.left;
-      }
+    if (this.state === "small") {
+      this.motion = "stand";
 
       // 점프중이 아니라면
       if (key === "ArrowDown" && !this.isJumping()) {
@@ -187,10 +171,10 @@ export default class Mario extends Player {
     if (!this.keys.ArrowDown) return;
 
     // 작은 마리오라면
-    if (this.status === "small") {
-      this.iPos.ix = this.keyTable.crawl;
+    if (this.state === "small") {
+      this.motion = "crawl";
 
-      // 아래 방향키를 누르고 첫 수행인 경우
+      // >>> 아래 방향키를 누르고 첫 수행인 경우
       if (this.iSize.ih !== this.keyTable.crawlHeight) {
         // this.pos.y += this.keyTable.sHeight - this.keyTable.crawlHeight;
       }
@@ -205,7 +189,7 @@ export default class Mario extends Player {
     // 점프 키를 누른 경우
     if (this.keys.Space) {
       // 현재 점프중이 아닌 경우
-      if (false === this.isJumping()) {
+      if (!this.isJumping()) {
         this.jumping.isUp = true;
         this.jumping.destination =
           this.pos.y - this.jumping.power * (this.speed === 1 ? 1 : 1.2);
@@ -213,7 +197,7 @@ export default class Mario extends Player {
     }
 
     // 작은 마리오
-    if (this.status === "small") {
+    if (this.state === "small") {
       // 점프중 ( 상승 )
       if (
         this.jumping.isUp &&
@@ -225,25 +209,17 @@ export default class Mario extends Player {
           (this.pos.y - this.jumping.destination) / 20 + this.fallSpeed.v + 2;
         this.pos.y -= delta;
 
-        // 렌더링할 이미지 지정
-        // 달리는 중이라면
-        if (this.isRunning()) {
-          // 달리기 점프
-          this.iPos.ix = this.keyTable.jumpRun;
-        }
-        // 걷는 중이라면
-        else {
-          // 점프 상승
-          this.iPos.ix = this.keyTable.jumpUp;
-        }
+        // 달리는 중이라면 달리기 점프
+        if (this.isRunning()) this.motion = "jumpRun";
+        // 걷는 중이라면 점프 상승
+        else this.motion = "jumpUp";
 
         // 엎드린 점프라면
-        if (this.keys.ArrowDown) {
-          this.iPos.ix = this.keyTable.crawl;
-        }
+        if (this.keys.ArrowDown) this.motion = "crawl";
 
         // 점프 상승의 끝
-        if (this.jumping.destination > this.pos.y) {
+        if (this.jumping.destination >= this.pos.y) {
+          this.pos.y = this.jumping.destination;
           this.fallSpeed.v = this.fallSpeed.min;
           this.jumping.isUp = false;
           this.jumping.isDown = true;
@@ -257,41 +233,39 @@ export default class Mario extends Player {
    * 렌더링 이미지 변경 ( 렌더링 X )
    */
   protected fall() {
-    // 땅에 닿은 시점에 서 있는 이미지 적용
-    if (
-      this.jumping.isDown &&
-      this.prevPos.y - this.pos.y >= 0 &&
-      !this.keys.ArrowDown
-    ) {
-      this.fallSpeed.v = this.fallSpeed.min;
-      this.iPos.ix = this.keyTable.right;
-    }
-
-    // 현재 하강중인지 판단
-    this.jumping.isDown = this.prevPos.y - this.pos.y < 0;
-
-    // 하강중
-    if (this.jumping.isDown) {
-      // 점점 빨리 하강하지만 최대 하강속도는 유지
-      this.fallSpeed.v += 0.1;
-      if (this.fallSpeed.v >= this.fallSpeed.max) {
-        this.fallSpeed.v = this.fallSpeed.max;
-      }
-      // 렌더링할 이미지 지정
-      // 달리는 중이라면
-      if (this.isRunning()) {
-        // 달리기 점프
-        this.iPos.ix = this.keyTable.jumpRun;
-      }
-      // 걷는 중이라면
-      else {
-        // 점프 하강
-        this.iPos.ix = this.keyTable.JumpDown;
+    // 작은 마리오라면
+    if (this.state === "small") {
+      // 땅에 닿은 시점에 서 있는 이미지 적용
+      if (
+        this.jumping.isDown &&
+        this.prevPos.y - this.pos.y >= 0 &&
+        !this.keys.ArrowDown
+      ) {
+        this.fallSpeed.v = this.fallSpeed.min;
+        this.motion = "stand";
       }
 
-      // 엎드린 점프라면
-      if (this.keys.ArrowDown) {
-        this.iPos.ix = this.keyTable.crawl;
+      // 현재 하강중인지 판단
+      this.jumping.isDown = this.prevPos.y - this.pos.y < 0;
+
+      // 상승과 하강이 변하는 시점 예외 처리
+      if (this.pos.y === this.jumping.destination) this.jumping.isDown = true;
+
+      // 하강중
+      if (this.jumping.isDown) {
+        // 점점 빨리 하강하지만 최대 하강속도는 유지
+        this.fallSpeed.v += 0.1;
+        if (this.fallSpeed.v >= this.fallSpeed.max) {
+          this.fallSpeed.v = this.fallSpeed.max;
+        }
+
+        // 달리는 중이라면 "달리기 점프"
+        if (this.isRunning()) this.motion = "jumpRun";
+        // 걷는 중이라면 "점프 하강"
+        else this.motion = "JumpDown";
+
+        // 엎드린 점프라면 "엎드리기"
+        if (this.keys.ArrowDown) this.motion = "crawl";
       }
     }
   }
@@ -301,11 +275,11 @@ export default class Mario extends Player {
    */
   protected draw() {
     // 작은 마리오
-    if (this.status === "small") {
+    if (this.state === "small") {
       this.iSize.iw = this.keyTable.width;
 
       // 엎드린 경우
-      if (this.keys.ArrowDown) {
+      if (this.motion === "crawl") {
         this.iSize.ih = this.keyTable.crawlHeight;
         this.size.h = this.keyTable.crawlHeight;
       }
@@ -315,6 +289,11 @@ export default class Mario extends Player {
         this.size.h = this.keyTable.height;
       }
     }
+
+    // 현재 행동
+    this.iPos.ix = this.keyTable[this.motion];
+    // 현재 마리오가 보고 있는 방향
+    this.iPos.iy = this.keyTable[this.dir ? "right" : "left"];
 
     Mario.ctx.drawImage(
       Mario.image,

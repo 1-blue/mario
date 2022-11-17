@@ -5,16 +5,23 @@ import Enemy from "./index";
 import { enemyKeyTable } from "../../../utils/index";
 
 // type
-import type { GoombaKeyTable, Position, Size } from "../../../types/index";
+import type {
+  GoombaKeyTable,
+  GoombaMotion,
+  Position,
+  Size,
+} from "../../../types/index";
 
 /**
  * 굼바 클래스
  * ( 마리오 등 )
  *
  * @param keyTable 굼바 이미지 렌더링 관련 값을 갖는 테이블
+ * @param state 상태 ( 왼발, 오른발 등 )
  */
 export default class Goomba extends Enemy {
-  protected keyTable: GoombaKeyTable;
+  private keyTable: GoombaKeyTable;
+  private motion: GoombaMotion;
 
   constructor(pos: Position, size: Size, dir: boolean = true) {
     super(
@@ -36,6 +43,7 @@ export default class Goomba extends Enemy {
     }
 
     this.keyTable = enemyKeyTable["goomba"];
+    this.motion = dir ? "right" : "left";
   }
 
   /**
@@ -45,10 +53,10 @@ export default class Goomba extends Enemy {
     if (this.count % 4 !== 0) return;
 
     // 현재 걷는 상태 변경 ( 왼발, 오른발 )
-    this.state = this.state === "right" ? "left" : "right";
+    this.motion = this.motion === "right" ? "left" : "right";
 
     // 렌더링할 이미지 위치 변경 ( 걷는 이미지 변경 )
-    this.iPos = { ...this.iPos, ix: this.keyTable[this.state] };
+    this.iPos = { ...this.iPos, ix: this.keyTable[this.motion] };
 
     const moveDistance =
       this.pos.x + (this.dir ? +this.distance : -this.distance);
