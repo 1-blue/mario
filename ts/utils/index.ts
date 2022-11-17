@@ -20,6 +20,7 @@ export const playerKeyTable = {
       width: 46,
       height: 64,
       crawlHeight: 46,
+      dieHight: 69,
 
       // 이미지의 y위치
       right: 0 * 69,

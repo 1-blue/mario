@@ -23,7 +23,7 @@ import type {
 export default class Mario extends Player {
   private keyTable: SmallMarioKeyTable;
   private state: MarioState;
-  private motion: SmallMarioMotion;
+  private _motion: SmallMarioMotion;
 
   constructor(pos: Position, size: Size, dir: boolean = true) {
     super(
@@ -42,7 +42,7 @@ export default class Mario extends Player {
     );
 
     this.state = "small";
-    this.motion = "stand";
+    this._motion = "stand";
     this.keyTable = playerKeyTable.mario[this.state];
 
     // 처음만 이미지 로딩
@@ -71,6 +71,9 @@ export default class Mario extends Player {
    * 가속
    */
   protected acceleration() {
+    // 죽었을 경우
+    if (this.motion === "die") return;
+
     // 현재 누르고 있는 키들
     const keys = this.keys;
 
@@ -113,6 +116,9 @@ export default class Mario extends Player {
    * >>> 관성 필요
    */
   protected move() {
+    // 죽었을 경우
+    if (this.motion === "die") return;
+
     // 현재 방향키를 누르고 있지 않다면
     if (!this.keys.ArrowLeft && !this.keys.ArrowRight) return;
 
@@ -151,6 +157,9 @@ export default class Mario extends Player {
    * 렌더링할 이미지 변경 ( 렌더링 X )
    */
   public stand(key: string) {
+    // 죽었을 경우
+    if (this.motion === "die") return;
+
     // 작은 마리오라면
     if (this.state === "small") {
       this.motion = "stand";
@@ -167,6 +176,9 @@ export default class Mario extends Player {
    * 렌더링 이미지 변경 ( 렌더링 X )
    */
   protected crawl() {
+    // 죽었을 경우
+    if (this.motion === "die") return;
+
     // 아래 방향키를 누르고 있지 않다면
     if (!this.keys.ArrowDown) return;
 
@@ -186,6 +198,9 @@ export default class Mario extends Player {
    * 좌표 이동 및 렌더링 이미지 변경 ( 렌더링 X )
    */
   protected jump() {
+    // 죽었을 경우
+    if (this.motion === "die") return;
+
     // 점프 키를 누른 경우
     if (this.keys.Space) {
       // 현재 점프중이 아닌 경우
@@ -233,6 +248,9 @@ export default class Mario extends Player {
    * 렌더링 이미지 변경 ( 렌더링 X )
    */
   protected fall() {
+    // 죽었을 경우
+    if (this.motion === "die") return;
+
     // 작은 마리오라면
     if (this.state === "small") {
       // 땅에 닿은 시점에 서 있는 이미지 적용
@@ -274,6 +292,9 @@ export default class Mario extends Player {
    * 캐릭터 렌더링
    */
   protected draw() {
+    // // 죽었을 경우
+    // if (this.motion === "die") return;
+
     // 작은 마리오
     if (this.state === "small") {
       this.iSize.iw = this.keyTable.width;
@@ -282,6 +303,11 @@ export default class Mario extends Player {
       if (this.motion === "crawl") {
         this.iSize.ih = this.keyTable.crawlHeight;
         this.size.h = this.keyTable.crawlHeight;
+      }
+      // 죽은 경우
+      else if (this.motion === "die") {
+        this.iSize.ih = this.keyTable.dieHight;
+        this.size.h = this.keyTable.dieHight;
       }
       // 그 외에 경우 ( 서있는/달리는 )
       else {
@@ -295,16 +321,32 @@ export default class Mario extends Player {
     // 현재 마리오가 보고 있는 방향
     this.iPos.iy = this.keyTable[this.dir ? "right" : "left"];
 
-    Mario.ctx.drawImage(
-      Mario.image,
-      this.iPos.ix,
-      this.iPos.iy,
-      this.iSize.iw,
-      this.iSize.ih,
-      this.pos.x,
-      this.pos.y,
-      this.size.w,
-      this.size.h
-    );
+    const { ix, iy } = this.iPos;
+    const { iw, ih } = this.iSize;
+    const { x, y } = this.pos;
+    const { w, h } = this.size;
+
+    Mario.ctx.drawImage(Mario.image, ix, iy, iw, ih, x, y, w, h);
+  }
+
+  /**
+   * 캐릭터 사망
+   */
+  public die() {
+    this.motion = "die";
+
+    this.pos.y -= 100;
+
+    setTimeout(() => {
+      // 게임 다시하기 및 기록 등 UI 렌더링
+    }, 1000);
+  }
+
+  // getter / setter
+  get motion() {
+    return this._motion;
+  }
+  set motion(_motion: SmallMarioMotion) {
+    this._motion = _motion;
   }
 }

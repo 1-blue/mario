@@ -1,7 +1,5 @@
 // class
 import Character from "../index";
-import Player from "../Player/index";
-import Block from "../../Map/Block";
 
 // type
 import type {
@@ -46,28 +44,14 @@ export default abstract class Enemy extends Character {
   }
 
   protected abstract move(): void;
+  protected abstract fall(): void;
   protected abstract draw(): void;
-
-  /**
-   * 충돌 처리
-   * ( 기존 충돌 처리 + 캐릭터와 충돌 처리 )
-   */
-  protected collision(blocks: Block[], player: Player | Enemy[]) {
-    // 블럭과의 충돌 처리
-    super.collision(blocks, player);
-
-    if (!(player instanceof Player)) return;
-    // >>> 플레이어와의 충돌 판단
-  }
+  public abstract die(): void;
 
   /**
    * 실행 ( 행동 + 렌더링 )
    */
-  public process(blocks: Block[], player: Player | Enemy[]) {
+  public process() {
     this.move();
-    this.draw();
-    this.collision(blocks, player);
-
-    super.execute();
   }
 }

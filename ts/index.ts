@@ -1,9 +1,11 @@
 // class
-import Background from "./class/Map/Background";
+import CollisitionManager from "./class/Manager/CollisitionManager";
 import MapManager from "./class/Map/MapManager";
+import Background from "./class/Map/Background";
 import Block from "./class/Map/Block";
 import Mario from "./class/Character/Player/Mario";
 import Goomba from "./class/Character/Enemy/Goomba";
+import Enemy from "./class/Character/Enemy/index";
 
 // util
 import { resizeCanvas } from "./utils/index";
@@ -27,6 +29,9 @@ import type { KeyType } from "./types/index";
   // 맵 관리자
   const mapManager = new MapManager();
 
+  // 충돌 처리 매니저
+  const collisionManager = new CollisitionManager();
+
   // 블럭
   Block.ctx = ctx;
   const blocks: Block[] = [];
@@ -40,11 +45,13 @@ import type { KeyType } from "./types/index";
 
   // 적 생성
   Goomba.ctx = ctx;
-  const goombas: Goomba[] = [];
+  let enemies: Enemy[] = [];
   Array(3)
     .fill(null)
     .map((v, i) =>
-      goombas.push(new Goomba({ x: 500, y: 200 * i }, { w: 60, h: 60 }))
+      enemies.push(
+        new Goomba({ x: 300 + i * 150, y: 400 * i }, { w: 60, h: 60 })
+      )
     );
 
   // 키 누름 시작
@@ -108,11 +115,27 @@ import type { KeyType } from "./types/index";
     // 블럭 렌더링
     blocks.forEach((block) => block.draw());
 
-    // 굼바 이동
-    goombas.forEach((goomba) => goomba.process(blocks, mario));
+    // 적 이동
+    enemies.forEach((enemy) => enemy.process());
 
-    // 마리오 키보드 이벤트 처리 및 렌더링
-    mario.process(blocks, goombas);
+    // 마리오 키보드 이벤트 처리
+    mario.process();
+
+    // 충돌 체크
+    collisionManager.collisionCAndB(mario, blocks);
+    enemies.forEach((enemy) => collisionManager.collisionCAndB(enemy, blocks));
+    const deadEnemy = collisionManager.collisitionPAndE(mario, enemies);
+
+    // 적이 죽었다면
+    if (deadEnemy) {
+      setTimeout(() => {
+        enemies = enemies.filter((enemy) => enemy !== deadEnemy);
+      }, 500);
+    }
+
+    // 마리오/적 렌더링
+    enemies.forEach((enemy) => enemy.execute());
+    mario.execute();
 
     // 애니메이션 실행
     requestAnimationFrame(startAnimation);
