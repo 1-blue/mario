@@ -47,6 +47,7 @@ export default abstract class Player extends Character {
   protected abstract fall(): void;
   protected abstract draw(): void;
   public abstract die(): void;
+  public abstract trample(): void;
 
   /**
    * 키보드 입력에 의한 출력 실행

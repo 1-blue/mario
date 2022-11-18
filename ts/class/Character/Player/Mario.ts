@@ -342,6 +342,22 @@ export default class Mario extends Player {
     }, 1000);
   }
 
+  /**
+   * 적 밟기
+   */
+  public trample() {
+    this.jumping.isUp = true;
+    this.jumping.isDown = false;
+    this.fallSpeed.v = this.fallSpeed.min;
+
+    if (this.keys.Space) {
+      this.jumping.destination =
+        this.pos.y - this.jumping.power * (this.speed === 1 ? 1 : 1.2);
+    } else {
+      this.jumping.destination = this.pos.y - this.jumping.power * 0.6;
+    }
+  }
+
   // getter / setter
   get motion() {
     return this._motion;

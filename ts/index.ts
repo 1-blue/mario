@@ -1,5 +1,5 @@
 // class
-import CollisitionManager from "./class/Manager/CollisitionManager";
+import CollisionManager from "./class/Manager/CollisionManager";
 import MapManager from "./class/Map/MapManager";
 import Background from "./class/Map/Background";
 import Block from "./class/Map/Block";
@@ -30,14 +30,14 @@ import type { KeyType } from "./types/index";
   const mapManager = new MapManager();
 
   // 충돌 처리 매니저
-  const collisionManager = new CollisitionManager();
+  const collisionManager = new CollisionManager();
 
   // 블럭
   Block.ctx = ctx;
   const blocks: Block[] = [];
 
   // 계단맵 생성
-  mapManager.CreateMap("stairs", blocks);
+  mapManager.CreateMap("straight", blocks);
 
   // 마리오 생성
   Mario.ctx = ctx;
@@ -46,11 +46,11 @@ import type { KeyType } from "./types/index";
   // 적 생성
   Goomba.ctx = ctx;
   let enemies: Enemy[] = [];
-  Array(3)
+  Array(14)
     .fill(null)
     .map((v, i) =>
       enemies.push(
-        new Goomba({ x: 300 + i * 150, y: 400 * i }, { w: 60, h: 60 })
+        new Goomba({ x: i * 100, y: 600 }, { w: 60, h: 60 }, i % 2 === 0)
       )
     );
 
@@ -69,9 +69,6 @@ import type { KeyType } from "./types/index";
 
     // 이미 같은 키를 누르고 있다면
     if (mario.keys.hasOwnProperty(key)) return;
-
-    // 점프중에 다시 점프 금지
-    if (key === "Space" && mario.isJumping()) return;
 
     // 점프중이라면 엎드리기 금지
     if (key === "ArrowDown" && mario.isJumping()) return;
@@ -124,7 +121,8 @@ import type { KeyType } from "./types/index";
     // 충돌 체크
     collisionManager.collisionCAndB(mario, blocks);
     enemies.forEach((enemy) => collisionManager.collisionCAndB(enemy, blocks));
-    const deadEnemy = collisionManager.collisitionPAndE(mario, enemies);
+    collisionManager.CollisionEandE(enemies);
+    const deadEnemy = collisionManager.collisionPAndE(mario, enemies);
 
     // 적이 죽었다면
     if (deadEnemy) {
