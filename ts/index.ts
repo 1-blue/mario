@@ -1,8 +1,8 @@
 // class
 import CollisionManager from "./class/Manager/CollisionManager";
-import MapManager from "./class/Map/MapManager";
+import MapManager from "./class/Manager/MapManager";
 import Background from "./class/Map/Background";
-import Block from "./class/Map/Block";
+import Block from "./class/Block/index";
 import Mario from "./class/Character/Player/Mario";
 import Goomba from "./class/Character/Enemy/Goomba";
 import Enemy from "./class/Character/Enemy/index";
@@ -11,7 +11,10 @@ import Enemy from "./class/Character/Enemy/index";
 import { resizeCanvas } from "./utils/index";
 
 // type
-import type { KeyType } from "./types/index";
+import type { KeyType, MapType } from "./types/index";
+
+// >>> 임시
+let type: MapType = "snow";
 
 (() => {
   // canvas
@@ -23,28 +26,31 @@ import type { KeyType } from "./types/index";
   const ctx = $canvas.getContext("2d");
   if (!ctx) return alert("#canvas의 context가 존재하지 않습니다.");
 
-  // 배경화면 생성
-  const background = new Background(ctx);
+  // "ctx" 등록
+  Background.ctx = ctx;
+  Block.ctx = ctx;
+  Mario.ctx = ctx;
+  Goomba.ctx = ctx;
+
+  // 배경
+  const background = new Background();
 
   // 맵 관리자
-  const mapManager = new MapManager();
+  const mapManager = new MapManager(type);
 
   // 충돌 처리 매니저
   const collisionManager = new CollisionManager();
 
-  // 블럭
-  Block.ctx = ctx;
+  // 블록
   const blocks: Block[] = [];
 
   // 계단맵 생성
-  mapManager.CreateMap("straight", blocks);
+  mapManager.CreateMap(blocks, "straight", type);
 
   // 마리오 생성
-  Mario.ctx = ctx;
   const mario = new Mario({ x: 240, y: 200 }, { w: 60, h: 60 });
 
   // 적 생성
-  Goomba.ctx = ctx;
   let enemies: Enemy[] = [];
   Array(14)
     .fill(null)
@@ -106,10 +112,10 @@ import type { KeyType } from "./types/index";
 
   // 애니메이션 실행 함수
   const startAnimation = () => {
-    // 배경 렌더링
-    background.draw();
+    // 배경 그리기
+    background.draw(type);
 
-    // 블럭 렌더링
+    // 블록 렌더링
     blocks.forEach((block) => block.draw());
 
     // 적 이동
@@ -144,10 +150,10 @@ import type { KeyType } from "./types/index";
 
   window.addEventListener("DOMContentLoaded", () => {
     resizeCanvas($canvas);
-    background.draw();
+    background.draw(type);
   });
   window.addEventListener("resize", () => {
     resizeCanvas($canvas);
-    background.draw();
+    background.draw(type);
   });
 })();

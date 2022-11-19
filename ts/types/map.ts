@@ -2,23 +2,10 @@
 import { blockKeyTable } from "../utils/index";
 
 /**
- * 맵 종류
+ * 맵 형태
  */
-export type MapType = "stairs";
-
-// ========== 블록 ==========
+export type MapShape = "stairs" | "straight";
 /**
- * 블록 키 테이블 타입
+ * 맵 타입
  */
-export type BlockKeyTable = typeof blockKeyTable[keyof typeof blockKeyTable];
-/**
- * 블럭 타입
- */
-export type BlockType = keyof typeof blockKeyTable;
-/**
- * 블럭 형태
- */
-export type BlockShape = Exclude<
-  keyof typeof blockKeyTable["normal"],
-  "width" | "height" | "default"
->;
+export type MapType = keyof typeof blockKeyTable;

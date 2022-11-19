@@ -2,7 +2,7 @@
 import Character from "../Character/index";
 import Player from "../Character/Player/index";
 import Enemy from "../Character/Enemy/index";
-import Block from "../Map/Block";
+import Block from "../Block/index";
 import Mario from "../Character/Player/Mario";
 import Goomba from "../Character/Enemy/Goomba";
 
@@ -34,8 +34,8 @@ export default class CollisionManager {
     const cBottom = y + h;
 
     blocks.forEach((block) => {
-      // 블럭의 상하좌우 좌표
-      const { x, y } = block.position;
+      // 블록의 상하좌우 좌표
+      const { x, y } = block.pos;
       const { w, h } = block.size;
       const bLeft = x;
       const bRight = x + w;

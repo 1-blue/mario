@@ -121,7 +121,7 @@ export default abstract class Character {
     this.prevPos.x = this.pos.x;
     this.prevPos.y = this.pos.y;
 
-    // 일단 하강하고 밑에 블럭이 있다면 충돌에서 검사 후 블럭위로 올려줌
+    // 일단 하강하고 밑에 블록이 있다면 충돌에서 검사 후 블록위로 올려줌
     this.pos.y += this.fallSpeed.v;
   }
 

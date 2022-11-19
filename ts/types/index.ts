@@ -48,4 +48,12 @@ export type {
   SmallMarioKeyTable,
 } from "./charactor";
 
-export type { BlockKeyTable, BlockShape, BlockType, MapType } from "./map";
+export type { MapShape, MapType } from "./map";
+
+export type {
+  BlockKeyTable,
+  BlockType,
+  GroundBlockShape,
+  UndergroundBlockShape,
+  SnowBlockShape,
+} from "./block";

@@ -68,14 +68,14 @@ export const enemyKeyTable = {
  * 블록 키코드
  */
 export const blockKeyTable = {
-  // 일반 블록
-  normal: {
+  // 지상 블록
+  ground: {
     // 이미지의 "width"와 "height"
     width: 53,
     height: 53,
 
     // 이미지 y위치
-    yPos: 0,
+    yPos: 0 * 53,
 
     // 이미지 x위치
     leftTop: 0 * 53,
@@ -91,11 +91,76 @@ export const blockKeyTable = {
     rightTopAngle: 10 * 53,
     leftBottomAngle: 11 * 53,
     rightBottomAngle: 12 * 53,
-    line: 13 * 53,
-    topArc: 14 * 53,
-    rightArc: 15 * 53,
-    bottomArc: 16 * 53,
-    leftArc: 17 * 53,
-    circle: 18 * 53,
+    horizontal: 13 * 53,
+    vertical: 14 * 53,
+    topArc: 15 * 53,
+    rightArc: 16 * 53,
+    bottomArc: 17 * 53,
+    leftArc: 18 * 53,
+    circle: 19 * 53,
+  },
+
+  // 지하 블록
+  underground: {
+    // 이미지의 "width"와 "height"
+    width: 53,
+    height: 53,
+
+    // 이미지 y위치
+    yPos: 1 * 53,
+
+    // 이미지 x위치
+    leftTop: 0 * 53,
+    top: 1 * 53,
+    rightTop: 2 * 53,
+    left: 3 * 53,
+    mid: 4 * 53,
+    right: 5 * 53,
+    leftBottom: 6 * 53,
+    bottom: 7 * 53,
+    rightBottom: 8 * 53,
+    leftTopAngle: 9 * 53,
+    rightTopAngle: 10 * 53,
+    leftBottomAngle: 11 * 53,
+    rightBottomAngle: 12 * 53,
+    horizontal: 13 * 53,
+    vertical: 14 * 53,
+    topArc: 15 * 53,
+    rightArc: 16 * 53,
+    bottomArc: 17 * 53,
+    leftArc: 18 * 53,
+    circle: 19 * 53,
+  },
+
+  // 눈 블록
+  snow: {
+    // 이미지의 "width"와 "height"
+    width: 53,
+    height: 53,
+
+    // 이미지 y위치
+    yPos: 2 * 53,
+
+    // 이미지 x위치
+    leftTop: 0 * 53,
+    top: 1 * 53,
+    rightTop: 2 * 53,
+    left: 3 * 53,
+    mid: 4 * 53,
+    right: 5 * 53,
+    leftBottom: 6 * 53,
+    bottom: 7 * 53,
+    rightBottom: 8 * 53,
+    leftTopAngle: 9 * 53,
+    rightTopAngle: 10 * 53,
+    leftBottomAngle: 11 * 53,
+    rightBottomAngle: 12 * 53,
+    horizontal: 13 * 53,
+    vertical: 14 * 53,
+    topArc: 15 * 53,
+    rightArc: 16 * 53,
+    bottomArc: 17 * 53,
+    leftArc: 18 * 53,
+    circle: 19 * 53,
   },
 };

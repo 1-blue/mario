@@ -1,3 +1,6 @@
+// type
+import type { MapType } from "../../types/map";
+
 /**
  * 배경화면 클래스 ( + 싱글톤 )
  *
@@ -7,35 +10,37 @@
  * @param image 배경화면 이미지를 가진 이미지 객체
  */
 export default class Background {
-  static instance: Background;
+  private static instance: Background;
+  public static ctx: CanvasRenderingContext2D;
 
-  private ctx!: CanvasRenderingContext2D;
   private image!: HTMLImageElement;
+  private type!: MapType;
 
-  constructor(ctx: CanvasRenderingContext2D) {
+  constructor() {
     // 싱글톤으로 구현
     if (Background.instance) return Background.instance;
 
-    const image = new Image();
-    image.src = "./assets/images/background.jpg";
-
-    this.ctx = ctx;
-    this.image = image;
-
-    // 이미지 로드 완료 시 그리기
-    image.addEventListener("load", () => {
-      ctx.drawImage(image, 0, 0, innerWidth, innerHeight);
-    });
-
-    // 싱글톤으로 구현
     Background.instance = this;
   }
 
   /**
    * 배경화면 그리기
    */
-  draw() {
-    this.ctx.clearRect(0, 0, innerWidth, innerHeight);
-    this.ctx.drawImage(this.image, 0, 0, innerWidth, innerHeight);
+  draw(type: MapType) {
+    if (this.type !== type) {
+      const image = new Image();
+      image.src = `./assets/images/${type}.jpg`;
+      this.image = image;
+      this.type = type;
+
+      // 이미지 로드 완료 시 그리기
+      this.image.addEventListener("load", () => {
+        Background.ctx.clearRect(0, 0, innerWidth, innerHeight);
+        Background.ctx.drawImage(this.image, 0, 0, innerWidth, innerHeight);
+      });
+    } else {
+      Background.ctx.clearRect(0, 0, innerWidth, innerHeight);
+      Background.ctx.drawImage(this.image, 0, 0, innerWidth, innerHeight);
+    }
   }
 }
