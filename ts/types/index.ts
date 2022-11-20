@@ -35,6 +35,10 @@ export type Keys = {
     startTime: number;
   };
 };
+/**
+ * 게임 진행 상태
+ */
+export type GameState = "start" | "play" | "end";
 
 export type {
   EmenyKinds,
