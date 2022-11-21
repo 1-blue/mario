@@ -1,21 +1,8 @@
 // class
-import CollisionManager from "./class/Manager/CollisionManager";
-import MapManager from "./class/Manager/MapManager";
-import Background from "./class/Map/Background";
-import Block from "./class/Block/index";
-import Mario from "./class/Character/Player/Mario";
-import Goomba from "./class/Character/Enemy/Goomba";
-import Enemy from "./class/Character/Enemy/index";
+import GameManager from "./class/Manager/GameManager";
 
 // util
 import { resizeCanvas } from "./utils/index";
-
-// type
-import type { KeyType, MapType } from "./types/index";
-import GameManager from "./class/Manager/GameManager";
-
-// >>> 임시
-let type: MapType = "snow";
 
 (() => {
   // canvas
@@ -28,10 +15,12 @@ let type: MapType = "snow";
   if (!ctx) return alert("#canvas의 context가 존재하지 않습니다.");
 
   // 게임 매니저 생성
-  const gameManager = new GameManager(ctx);
+  GameManager.ctx = ctx;
+  const gameManager = new GameManager();
 
   // 애니메이션 실행 함수
   const startAnimation = () => {
+    // 게임 시작, 게임 중, 게임 종료 등 상황에 맞게 렌더링
     gameManager.render();
 
     // 애니메이션 실행
@@ -43,10 +32,8 @@ let type: MapType = "snow";
 
   window.addEventListener("DOMContentLoaded", () => {
     resizeCanvas($canvas);
-    // background.draw(type);
   });
   window.addEventListener("resize", () => {
     resizeCanvas($canvas);
-    // background.draw(type);
   });
 })();

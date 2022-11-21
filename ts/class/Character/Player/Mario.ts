@@ -1,4 +1,5 @@
 // class
+import GameManager from "../../Manager/GameManager";
 import Player from "./index";
 
 // util
@@ -339,6 +340,9 @@ export default class Mario extends Player {
 
     setTimeout(() => {
       // 게임 다시하기 및 기록 등 UI 렌더링
+      const gameManager = new GameManager();
+
+      gameManager.reset();
     }, 1000);
   }
 

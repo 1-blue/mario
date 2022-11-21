@@ -13,41 +13,38 @@ import type { GameState, KeyType, MapShape, MapType } from "../../types/index";
 
 export default class GameManager {
   private static instance: GameManager;
+  public static ctx: CanvasRenderingContext2D;
 
-  private ctx!: CanvasRenderingContext2D;
   private state!: GameState;
   private mapType!: MapType;
   private mapShape!: MapShape;
 
-  //
+  // 필요한 인스턴스
   private background!: Background | null;
   private mapManager!: MapManager | null;
   private collisionManager!: CollisionManager | null;
   private player!: Player | null;
 
-  //
+  // 인스턴스 배열
   private blocks!: Block[];
   private enemies!: Enemy[];
 
-  //
+  // 렌더링할 UI Element
   private $UI!: HTMLElement;
 
-  constructor(ctx: CanvasRenderingContext2D) {
+  constructor() {
     // 싱글톤으로 구현
     if (GameManager.instance) return GameManager.instance;
 
-    this.ctx = ctx;
     this.state = "start";
     this.mapType = "ground";
     this.mapShape = "straight";
 
-    //
     this.background = null;
     this.mapManager = null;
     this.collisionManager = null;
     this.player = null;
 
-    //
     this.blocks = [];
     this.enemies = [];
 
@@ -60,7 +57,7 @@ export default class GameManager {
   }
 
   /**
-   *
+   * 현재 상황에 맞는 렌더링
    */
   public render() {
     if (!this.background) return;
@@ -86,7 +83,7 @@ export default class GameManager {
    */
   public init() {
     // "ctx" 등록
-    Background.ctx = this.ctx;
+    Background.ctx = GameManager.ctx;
 
     // 배경
     this.background = new Background();
@@ -108,9 +105,9 @@ export default class GameManager {
     this.$UI.classList.add("none");
 
     // "ctx" 등록
-    Block.ctx = this.ctx;
-    Mario.ctx = this.ctx;
-    Goomba.ctx = this.ctx;
+    Block.ctx = GameManager.ctx;
+    Mario.ctx = GameManager.ctx;
+    Goomba.ctx = GameManager.ctx;
 
     // 충돌 처리 매니저
     this.collisionManager = new CollisionManager();
@@ -140,13 +137,9 @@ export default class GameManager {
   public reset() {
     this.state = "start";
 
-    //
-    this.background = null;
-    this.mapManager = null;
     this.collisionManager = null;
     this.player = null;
 
-    //
     this.blocks = [];
     this.enemies = [];
   }
@@ -161,6 +154,11 @@ export default class GameManager {
     // 이미 UI를 채웠다면
     if (this.$UI.childElementCount !== 0) return;
 
+    // 타이틀
+    const $$title = document.createElement("h1");
+    $$title.innerText = "TS + Canvas로 만든 마리오 웹 게임";
+    this.$UI.appendChild($$title);
+
     // 맵 형태 선택
     const $$mapShape = document.createElement("ul");
     const $$mapShapeLI1 = document.createElement("li");
@@ -168,9 +166,10 @@ export default class GameManager {
     const $$mapShapeBtn1 = document.createElement("button");
     const $$mapShapeBtn2 = document.createElement("button");
 
-    $$mapShape.style.top = "20%";
+    $$mapShape.style.top = "40%";
     $$mapShapeBtn1.type = "button";
     $$mapShapeBtn1.innerText = "직선 맵";
+    $$mapShapeBtn1.classList.add("active");
     $$mapShapeBtn1.dataset.shape = "straight";
     $$mapShapeBtn2.type = "button";
     $$mapShapeBtn2.innerText = "언덕 맵";
@@ -190,10 +189,11 @@ export default class GameManager {
     const $$mapTypeBtn2 = document.createElement("button");
     const $$mapTypeBtn3 = document.createElement("button");
 
-    $$mapType.style.top = "40%";
+    $$mapType.style.top = "50%";
     $$mapTypeBtn1.type = "button";
     $$mapTypeBtn1.innerText = "지상";
     $$mapTypeBtn1.dataset.type = "ground";
+    $$mapTypeBtn1.classList.add("active");
     $$mapTypeBtn2.type = "button";
     $$mapTypeBtn2.innerText = "지하";
     $$mapTypeBtn2.dataset.type = "underground";
@@ -208,11 +208,17 @@ export default class GameManager {
     this.$UI.appendChild($$mapType);
 
     // 시작 버튼
+    const $$startBtnUL = document.createElement("ul");
+    const $$startBtnLI = document.createElement("li");
     const $$startBtn = document.createElement("button");
+    $$startBtnUL.style.top = "70%";
     $$startBtn.type = "button";
     $$startBtn.innerHTML = "게임 시작";
     $$startBtn.dataset.start = "start";
-    this.$UI.appendChild($$startBtn);
+
+    $$startBtnLI.appendChild($$startBtn);
+    $$startBtnUL.appendChild($$startBtnLI);
+    this.$UI.appendChild($$startBtnUL);
 
     // 이벤트 등록
     this.$UI.addEventListener("click", (e) => {

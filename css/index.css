@@ -1,4 +1,6 @@
 html {
+  box-sizing: border-box;
+
   width: 100%;
   height: 100%;
 
@@ -11,4 +13,74 @@ body {
 
 #canvas {
   background-color: gray;
+}
+
+#ui {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+
+  font-family: 'Jua', sans-serif;
+}
+#ui > ul {
+  position: absolute;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+#ui > h1 {
+  position: absolute;
+  top: 20%;
+  left: 0%;
+  right: 0%;
+
+  text-align: center;
+
+  font-size: 3rem;
+  font-weight: bold;
+}
+#ui > ul > li {
+  margin-right: 5%;
+
+  white-space: nowrap;
+}
+#ui > ul > li > button[type="button"] {
+  padding: 0.4em 1em;
+
+  border: none;
+  background-color: #9ca3af;
+  color: white;
+  border-radius: 0.2em;
+  box-shadow: 2px 2px 12px gray;
+  
+  font-size: 1.8rem;
+  font-weight: bold;
+  font-family: 'Jua', sans-serif;
+
+  transition: background-color 0.4s;
+
+  cursor: pointer;
+}
+#ui > ul > li > button[type="button"]:hover, #ui > ul > li > button[type="button"]:focus {
+  outline: 2px solid #6b7280;
+  outline-offset: 2px;
+  outline-width: 4px;
+  
+  background-color: #6b7280;
+}
+#ui > ul > li > button[data-start="start"] {
+  padding: 0.6em 1.2em;
+
+  font-size: 2rem
+}
+.active {
+  outline: 2px solid #6b7280;
+  outline-offset: 2px;
+  outline-width: 4px;
+  
+  background-color: #6b7280 !important;
+}
+.none {
+  display: none !important;
 }
