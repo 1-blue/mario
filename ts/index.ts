@@ -36,4 +36,13 @@ import { resizeCanvas } from "./utils/index";
   window.addEventListener("resize", () => {
     resizeCanvas($canvas);
   });
+  window.addEventListener(
+    "keydown",
+    (e) => {
+      if (e.key.includes("Arrow") || e.key === " ") {
+        e.preventDefault();
+      }
+    },
+    false
+  );
 })();

@@ -214,4 +214,32 @@ export default class CollisionManager {
       }
     });
   }
+
+  // 플레이어 움직임 제한
+  public moveRangeLimitPlayer(player: Player) {
+    // 좌측 제한
+    if (player.pos.x < 0) {
+      player.pos.x = 0;
+    }
+    // 우측 제한
+    else if (player.pos.x > innerWidth * 6 - player.size.w) {
+      player.pos.x = innerWidth * 6 - player.size.w;
+    }
+  }
+
+  // 적 움직임 제한
+  public moveRangeLimitEnemy(enemies: Enemy[]) {
+    enemies.forEach((enemy) => {
+      // 좌측 제한
+      if (enemy.pos.x < 0) {
+        enemy.dir = true;
+        enemy.pos.x = 0;
+      }
+      // 우측 제한
+      else if (enemy.pos.x > innerWidth * 6 - enemy.size.w) {
+        enemy.dir = false;
+        enemy.pos.x = innerWidth * 6 - enemy.size.w;
+      }
+    });
+  }
 }

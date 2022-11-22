@@ -3,7 +3,7 @@
  * @param {*} $canvas canvas element
  */
 export const resizeCanvas = ($canvas: HTMLCanvasElement) => {
-  $canvas.width = innerWidth;
+  $canvas.width = innerWidth * 6;
   $canvas.height = innerHeight;
 };
 

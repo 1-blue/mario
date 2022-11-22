@@ -36,11 +36,31 @@ export default class Background {
       // 이미지 로드 완료 시 그리기
       this.image.addEventListener("load", () => {
         Background.ctx.clearRect(0, 0, innerWidth, innerHeight);
-        Background.ctx.drawImage(this.image, 0, 0, innerWidth, innerHeight);
+        Array(6)
+          .fill(null)
+          .forEach((v, i) =>
+            Background.ctx.drawImage(
+              this.image,
+              innerWidth * i,
+              0,
+              innerWidth * (i + 1),
+              innerHeight
+            )
+          );
       });
     } else {
       Background.ctx.clearRect(0, 0, innerWidth, innerHeight);
-      Background.ctx.drawImage(this.image, 0, 0, innerWidth, innerHeight);
+      Array(6)
+        .fill(null)
+        .forEach((v, i) =>
+          Background.ctx.drawImage(
+            this.image,
+            innerWidth * i,
+            0,
+            innerWidth * (i + 1),
+            innerHeight
+          )
+        );
     }
   }
 }

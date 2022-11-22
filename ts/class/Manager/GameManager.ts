@@ -116,13 +116,21 @@ export default class GameManager {
     this.player = new Mario({ x: 240, y: 200 }, { w: 60, h: 60 });
 
     // 적(굼바) 생성
-    Array(14)
+    Array(20)
       .fill(null)
-      .map((v, i) =>
+      .map(() => {
+        const randomX = Math.ceil(
+          Math.random() * (innerWidth * 5) + innerWidth
+        );
+
         this.enemies.push(
-          new Goomba({ x: i * 100, y: 600 }, { w: 60, h: 60 }, i % 2 === 0)
-        )
-      );
+          new Goomba(
+            { x: randomX, y: 600 },
+            { w: 60, h: 60 },
+            randomX % 2 === 0
+          )
+        );
+      });
 
     // 키 누름 시작 이벤트 등록
     window.addEventListener("keydown", this.keydownEvent());
@@ -148,6 +156,8 @@ export default class GameManager {
    * 게임 시작 UI
    */
   public renderStartUI() {
+    document.querySelector("html")!.style.overflowX = "hidden";
+
     // UI 보이기
     this.$UI.classList.remove("none");
 
@@ -260,6 +270,8 @@ export default class GameManager {
    * 게임 실행
    */
   private play() {
+    document.querySelector("html")!.style.overflowX = "scroll";
+
     if (!this.player || !this.background || !this.collisionManager) return;
 
     // 블록 렌더링
@@ -281,6 +293,10 @@ export default class GameManager {
       this.player,
       this.enemies
     );
+
+    // 이동 제한
+    this.collisionManager.moveRangeLimitPlayer(this.player);
+    this.collisionManager.moveRangeLimitEnemy(this.enemies);
 
     // 적이 죽었다면
     if (deadEnemy) {

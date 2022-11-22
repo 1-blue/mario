@@ -293,9 +293,6 @@ export default class Mario extends Player {
    * 캐릭터 렌더링
    */
   protected draw() {
-    // // 죽었을 경우
-    // if (this.motion === "die") return;
-
     // 작은 마리오
     if (this.state === "small") {
       this.iSize.iw = this.keyTable.width;
@@ -359,6 +356,17 @@ export default class Mario extends Player {
         this.pos.y - this.jumping.power * (this.speed === 1 ? 1 : 1.2);
     } else {
       this.jumping.destination = this.pos.y - this.jumping.power * 0.6;
+    }
+  }
+
+  /**
+   * 시점 변화
+   */
+  protected viewPoint() {
+    if (this.pos.x > innerWidth / 2) {
+      scrollTo(this.pos.x - innerWidth / 2, 0);
+    } else {
+      scrollTo(0, 0);
     }
   }
 

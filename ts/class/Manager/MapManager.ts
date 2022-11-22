@@ -54,794 +54,497 @@ export default class MapManager {
    * @param blocks 생성할 블록을 저장할 블록 배열
    */
   private createStairs(blocks: Block[], type: MapType) {
+    // 랜덤한 블록 Y위치 후보
+    const candidateY = [200, 100];
+
     // 지상 맵
     if (type === "ground") {
       // 1층
-      Array(Math.round(Math.round(innerWidth / 100)))
+      Array(Math.ceil((innerWidth * 6) / 100))
         .fill(null)
         .forEach((v, i) =>
-          blocks.push(new GroundBlock({ x: i * 100, y: 900 }, "mid", "ground"))
+          blocks.push(new GroundBlock({ x: i * 100, y: 900 }, "mid", type))
         );
       // 2층
-      Array(Math.round(Math.round(innerWidth / 100)))
+      Array(Math.ceil((innerWidth * 6) / 100))
         .fill(null)
         .forEach((v, i) => {
-          switch (i) {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-              blocks.push(
-                new GroundBlock({ x: i * 100, y: 800 }, "top", "ground")
-              );
-              break;
-            case 4:
-              blocks.push(
-                new GroundBlock(
-                  { x: i * 100, y: 800 },
-                  "leftTopAngle",
-                  "ground"
-                )
-              );
-              break;
-            case 5:
-            case 6:
-            case 7:
-            case 8:
-            case 9:
-            case 10:
-              blocks.push(
-                new GroundBlock({ x: i * 100, y: 800 }, "mid", "ground")
-              );
-              break;
-            case 11:
-              blocks.push(
-                new GroundBlock(
-                  { x: i * 100, y: 800 },
-                  "rightTopAngle",
-                  "ground"
-                )
-              );
-              break;
-            case 12:
-            case 13:
-              blocks.push(
-                new GroundBlock({ x: i * 100, y: 800 }, "top", "ground")
-              );
-              break;
-            default:
-              blocks.push(
-                new GroundBlock({ x: i * 100, y: 800 }, "top", "ground")
-              );
-              break;
+          if (i % 12 === 0 || i % 12 === 1) {
+            blocks.push(new GroundBlock({ x: i * 100, y: 800 }, "top", type));
+          } else if (i % 12 === 2) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 800 }, "leftTopAngle", type)
+            );
+          } else if (
+            i % 12 === 3 ||
+            i % 12 === 4 ||
+            i % 12 === 5 ||
+            i % 12 === 6 ||
+            i % 12 === 7 ||
+            i % 12 === 8
+          ) {
+            blocks.push(new GroundBlock({ x: i * 100, y: 800 }, "mid", type));
+          } else if (i % 12 === 9) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 800 }, "rightTopAngle", type)
+            );
+          } else if (i % 12 === 10 || i % 12 === 11) {
+            blocks.push(new GroundBlock({ x: i * 100, y: 800 }, "top", type));
           }
         });
       // 3층
-      Array(Math.round(Math.round(innerWidth / 100)))
+      Array(Math.ceil((innerWidth * 6) / 100))
         .fill(null)
         .forEach((v, i) => {
-          switch (i) {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-              break;
-            case 4:
-              blocks.push(
-                new GroundBlock({ x: i * 100, y: 700 }, "leftTop", "ground")
-              );
-              break;
-            case 5:
-              blocks.push(
-                new GroundBlock(
-                  { x: i * 100, y: 700 },
-                  "leftTopAngle",
-                  "ground"
-                )
-              );
-              break;
-            case 6:
-            case 7:
-            case 8:
-            case 9:
-              blocks.push(
-                new GroundBlock({ x: i * 100, y: 700 }, "mid", "ground")
-              );
-              break;
-            case 10:
-              blocks.push(
-                new GroundBlock(
-                  { x: i * 100, y: 700 },
-                  "rightTopAngle",
-                  "ground"
-                )
-              );
-              break;
-            case 11:
-              blocks.push(
-                new GroundBlock({ x: i * 100, y: 700 }, "rightTop", "ground")
-              );
-              break;
-            case 12:
-            case 13:
-              break;
-
-            default:
-              break;
+          if (i % 12 === 0 || i % 12 === 1) return;
+          else if (i % 12 === 2) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 700 }, "leftTop", type)
+            );
+          } else if (i % 12 === 3) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 700 }, "leftTopAngle", type)
+            );
+          } else if (
+            i % 12 === 4 ||
+            i % 12 === 5 ||
+            i % 12 === 6 ||
+            i % 12 === 7
+          ) {
+            blocks.push(new GroundBlock({ x: i * 100, y: 700 }, "mid", type));
+          } else if (i % 12 === 8) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 700 }, "rightTopAngle", type)
+            );
+          } else if (i % 12 === 9) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 700 }, "rightTop", type)
+            );
+          } else if (i % 12 === 10 || i % 12 === 11) {
+            return;
           }
         });
       // 4층
-      Array(Math.round(Math.round(innerWidth / 100)))
+      Array(Math.ceil((innerWidth * 6) / 100))
         .fill(null)
         .forEach((v, i) => {
-          switch (i) {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-              break;
-            case 5:
-              blocks.push(
-                new GroundBlock({ x: i * 100, y: 600 }, "leftTop", "ground")
-              );
-              break;
-            case 6:
-              blocks.push(
-                new GroundBlock(
-                  { x: i * 100, y: 600 },
-                  "leftTopAngle",
-                  "ground"
-                )
-              );
-              break;
-            case 7:
-            case 8:
-              blocks.push(
-                new GroundBlock({ x: i * 100, y: 600 }, "mid", "ground")
-              );
-              break;
-            case 9:
-              blocks.push(
-                new GroundBlock(
-                  { x: i * 100, y: 600 },
-                  "rightTopAngle",
-                  "ground"
-                )
-              );
-              break;
-            case 10:
-              blocks.push(
-                new GroundBlock({ x: i * 100, y: 600 }, "rightTop", "ground")
-              );
-              break;
-            case 11:
-            case 12:
-            case 13:
-              break;
-            default:
-              break;
+          if (i % 12 === 0 || i % 12 === 1 || i % 12 === 2) return;
+          else if (i % 12 === 3) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 600 }, "leftTop", type)
+            );
+          } else if (i % 12 === 4) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 600 }, "leftTopAngle", type)
+            );
+          } else if (i % 12 === 5 || i % 12 === 6) {
+            blocks.push(new GroundBlock({ x: i * 100, y: 600 }, "mid", type));
+          } else if (i % 12 === 7) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 600 }, "rightTopAngle", type)
+            );
+          } else if (i % 12 == 8) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 600 }, "rightTop", type)
+            );
+          } else if (i % 12 === 9 || i % 12 === 10 || i % 12 === 11) {
+            return;
           }
         });
       // 5층
-      Array(Math.round(Math.round(innerWidth / 100)))
+      Array(Math.ceil((innerWidth * 6) / 100))
         .fill(null)
         .forEach((v, i) => {
-          switch (i) {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-            case 5:
-              break;
-            case 6:
-              blocks.push(
-                new GroundBlock({ x: i * 100, y: 500 }, "leftTop", "ground")
-              );
-              break;
-            case 7:
-              blocks.push(
-                new GroundBlock(
-                  { x: i * 100, y: 500 },
-                  "leftTopAngle",
-                  "ground"
-                )
-              );
-              break;
-            case 8:
-              blocks.push(
-                new GroundBlock(
-                  { x: i * 100, y: 500 },
-                  "rightTopAngle",
-                  "ground"
-                )
-              );
-              break;
-            case 9:
-              blocks.push(
-                new GroundBlock({ x: i * 100, y: 500 }, "rightTop", "ground")
-              );
-              break;
-            case 10:
-            case 11:
-            case 12:
-            case 13:
-              break;
-            default:
-              break;
+          if (i % 12 === 0 || i % 12 === 1 || i % 12 === 2 || i % 12 === 3)
+            return;
+          else if (i % 12 === 4) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 500 }, "leftTop", type)
+            );
+          } else if (i % 12 === 5) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 500 }, "leftTopAngle", type)
+            );
+          } else if (i % 12 === 6) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 500 }, "rightTopAngle", type)
+            );
+          } else if (i % 12 === 7) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 500 }, "rightTop", type)
+            );
+          } else if (
+            i % 12 === 8 ||
+            i % 12 === 9 ||
+            i % 12 === 10 ||
+            i % 12 === 11
+          ) {
+            return;
           }
         });
       // 6층
-      Array(Math.round(Math.round(innerWidth / 100)))
+      Array(Math.ceil((innerWidth * 6) / 100))
         .fill(null)
         .forEach((v, i) => {
-          switch (i) {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-            case 5:
-            case 6:
-              break;
-            case 7:
-              blocks.push(
-                new GroundBlock({ x: i * 100, y: 400 }, "leftTop", "ground")
-              );
-              break;
-            case 8:
-              blocks.push(
-                new GroundBlock({ x: i * 100, y: 400 }, "rightTop", "ground")
-              );
-              break;
-            case 9:
-            case 10:
-            case 11:
-            case 12:
-            case 13:
-              break;
-            default:
-              break;
+          if (
+            i % 12 === 0 ||
+            i % 12 === 1 ||
+            i % 12 === 2 ||
+            i % 12 === 3 ||
+            i % 12 === 4
+          )
+            return;
+          else if (i % 12 === 5) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 400 }, "leftTop", type)
+            );
+          } else if (i % 12 === 6) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 400 }, "rightTop", type)
+            );
+          } else if (
+            i % 12 === 7 ||
+            i % 12 === 8 ||
+            i % 12 === 9 ||
+            i % 12 === 10 ||
+            i % 12 === 11
+          ) {
+            return;
           }
         });
-      // 보너스 ( 우측 상단 블록 )
-      blocks.push(new GroundBlock({ x: 1000, y: 200 }, "leftArc", "ground"));
-      blocks.push(new GroundBlock({ x: 1100, y: 200 }, "horizontal", "ground"));
-      blocks.push(new GroundBlock({ x: 1200, y: 200 }, "rightArc", "ground"));
     }
     // 지하 맵
     else if (type === "underground") {
       // 1층
-      Array(Math.round(Math.round(innerWidth / 100)))
+      Array(Math.ceil((innerWidth * 6) / 100))
         .fill(null)
         .forEach((v, i) =>
-          blocks.push(
-            new UndergroundBlock({ x: i * 100, y: 900 }, "mid", "underground")
-          )
+          blocks.push(new GroundBlock({ x: i * 100, y: 900 }, "mid", type))
         );
       // 2층
-      Array(Math.round(Math.round(innerWidth / 100)))
+      Array(Math.ceil((innerWidth * 6) / 100))
         .fill(null)
         .forEach((v, i) => {
-          switch (i) {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-              blocks.push(
-                new UndergroundBlock(
-                  { x: i * 100, y: 800 },
-                  "top",
-                  "underground"
-                )
-              );
-              break;
-            case 4:
-              blocks.push(
-                new UndergroundBlock(
-                  { x: i * 100, y: 800 },
-                  "leftTopAngle",
-                  "underground"
-                )
-              );
-              break;
-            case 5:
-            case 6:
-            case 7:
-            case 8:
-            case 9:
-            case 10:
-              blocks.push(
-                new UndergroundBlock(
-                  { x: i * 100, y: 800 },
-                  "mid",
-                  "underground"
-                )
-              );
-              break;
-            case 11:
-              blocks.push(
-                new UndergroundBlock(
-                  { x: i * 100, y: 800 },
-                  "rightTopAngle",
-                  "underground"
-                )
-              );
-              break;
-            case 12:
-            case 13:
-              blocks.push(
-                new UndergroundBlock(
-                  { x: i * 100, y: 800 },
-                  "top",
-                  "underground"
-                )
-              );
-              break;
-            default:
-              blocks.push(
-                new UndergroundBlock(
-                  { x: i * 100, y: 800 },
-                  "top",
-                  "underground"
-                )
-              );
-              break;
+          if (i % 12 === 0 || i % 12 === 1) {
+            blocks.push(new GroundBlock({ x: i * 100, y: 800 }, "top", type));
+          } else if (i % 12 === 2) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 800 }, "leftTopAngle", type)
+            );
+          } else if (
+            i % 12 === 3 ||
+            i % 12 === 4 ||
+            i % 12 === 5 ||
+            i % 12 === 6 ||
+            i % 12 === 7 ||
+            i % 12 === 8
+          ) {
+            blocks.push(new GroundBlock({ x: i * 100, y: 800 }, "mid", type));
+          } else if (i % 12 === 9) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 800 }, "rightTopAngle", type)
+            );
+          } else if (i % 12 === 10 || i % 12 === 11) {
+            blocks.push(new GroundBlock({ x: i * 100, y: 800 }, "top", type));
           }
         });
       // 3층
-      Array(Math.round(Math.round(innerWidth / 100)))
+      Array(Math.ceil((innerWidth * 6) / 100))
         .fill(null)
         .forEach((v, i) => {
-          switch (i) {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-              break;
-            case 4:
-              blocks.push(
-                new UndergroundBlock(
-                  { x: i * 100, y: 700 },
-                  "leftTop",
-                  "underground"
-                )
-              );
-              break;
-            case 5:
-              blocks.push(
-                new UndergroundBlock(
-                  { x: i * 100, y: 700 },
-                  "leftTopAngle",
-                  "underground"
-                )
-              );
-              break;
-            case 6:
-            case 7:
-            case 8:
-            case 9:
-              blocks.push(
-                new UndergroundBlock(
-                  { x: i * 100, y: 700 },
-                  "mid",
-                  "underground"
-                )
-              );
-              break;
-            case 10:
-              blocks.push(
-                new UndergroundBlock(
-                  { x: i * 100, y: 700 },
-                  "rightTopAngle",
-                  "underground"
-                )
-              );
-              break;
-            case 11:
-              blocks.push(
-                new UndergroundBlock(
-                  { x: i * 100, y: 700 },
-                  "rightTop",
-                  "underground"
-                )
-              );
-              break;
-            case 12:
-            case 13:
-              break;
-
-            default:
-              break;
+          if (i % 12 === 0 || i % 12 === 1) return;
+          else if (i % 12 === 2) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 700 }, "leftTop", type)
+            );
+          } else if (i % 12 === 3) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 700 }, "leftTopAngle", type)
+            );
+          } else if (
+            i % 12 === 4 ||
+            i % 12 === 5 ||
+            i % 12 === 6 ||
+            i % 12 === 7
+          ) {
+            blocks.push(new GroundBlock({ x: i * 100, y: 700 }, "mid", type));
+          } else if (i % 12 === 8) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 700 }, "rightTopAngle", type)
+            );
+          } else if (i % 12 === 9) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 700 }, "rightTop", type)
+            );
+          } else if (i % 12 === 10 || i % 12 === 11) {
+            return;
           }
         });
       // 4층
-      Array(Math.round(Math.round(innerWidth / 100)))
+      Array(Math.ceil((innerWidth * 6) / 100))
         .fill(null)
         .forEach((v, i) => {
-          switch (i) {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-              break;
-            case 5:
-              blocks.push(
-                new UndergroundBlock(
-                  { x: i * 100, y: 600 },
-                  "leftTop",
-                  "underground"
-                )
-              );
-              break;
-            case 6:
-              blocks.push(
-                new UndergroundBlock(
-                  { x: i * 100, y: 600 },
-                  "leftTopAngle",
-                  "underground"
-                )
-              );
-              break;
-            case 7:
-            case 8:
-              blocks.push(
-                new UndergroundBlock(
-                  { x: i * 100, y: 600 },
-                  "mid",
-                  "underground"
-                )
-              );
-              break;
-            case 9:
-              blocks.push(
-                new UndergroundBlock(
-                  { x: i * 100, y: 600 },
-                  "rightTopAngle",
-                  "underground"
-                )
-              );
-              break;
-            case 10:
-              blocks.push(
-                new UndergroundBlock(
-                  { x: i * 100, y: 600 },
-                  "rightTop",
-                  "underground"
-                )
-              );
-              break;
-            case 11:
-            case 12:
-            case 13:
-              break;
-            default:
-              break;
+          if (i % 12 === 0 || i % 12 === 1 || i % 12 === 2) return;
+          else if (i % 12 === 3) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 600 }, "leftTop", type)
+            );
+          } else if (i % 12 === 4) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 600 }, "leftTopAngle", type)
+            );
+          } else if (i % 12 === 5 || i % 12 === 6) {
+            blocks.push(new GroundBlock({ x: i * 100, y: 600 }, "mid", type));
+          } else if (i % 12 === 7) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 600 }, "rightTopAngle", type)
+            );
+          } else if (i % 12 == 8) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 600 }, "rightTop", type)
+            );
+          } else if (i % 12 === 9 || i % 12 === 10 || i % 12 === 11) {
+            return;
           }
         });
       // 5층
-      Array(Math.round(Math.round(innerWidth / 100)))
+      Array(Math.ceil((innerWidth * 6) / 100))
         .fill(null)
         .forEach((v, i) => {
-          switch (i) {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-            case 5:
-              break;
-            case 6:
-              blocks.push(
-                new UndergroundBlock(
-                  { x: i * 100, y: 500 },
-                  "leftTop",
-                  "underground"
-                )
-              );
-              break;
-            case 7:
-              blocks.push(
-                new UndergroundBlock(
-                  { x: i * 100, y: 500 },
-                  "leftTopAngle",
-                  "underground"
-                )
-              );
-              break;
-            case 8:
-              blocks.push(
-                new UndergroundBlock(
-                  { x: i * 100, y: 500 },
-                  "rightTopAngle",
-                  "underground"
-                )
-              );
-              break;
-            case 9:
-              blocks.push(
-                new UndergroundBlock(
-                  { x: i * 100, y: 500 },
-                  "rightTop",
-                  "underground"
-                )
-              );
-              break;
-            case 10:
-            case 11:
-            case 12:
-            case 13:
-              break;
-            default:
-              break;
+          if (i % 12 === 0 || i % 12 === 1 || i % 12 === 2 || i % 12 === 3)
+            return;
+          else if (i % 12 === 4) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 500 }, "leftTop", type)
+            );
+          } else if (i % 12 === 5) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 500 }, "leftTopAngle", type)
+            );
+          } else if (i % 12 === 6) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 500 }, "rightTopAngle", type)
+            );
+          } else if (i % 12 === 7) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 500 }, "rightTop", type)
+            );
+          } else if (
+            i % 12 === 8 ||
+            i % 12 === 9 ||
+            i % 12 === 10 ||
+            i % 12 === 11
+          ) {
+            return;
           }
         });
       // 6층
-      Array(Math.round(Math.round(innerWidth / 100)))
+      Array(Math.ceil((innerWidth * 6) / 100))
         .fill(null)
         .forEach((v, i) => {
-          switch (i) {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-            case 5:
-            case 6:
-              break;
-            case 7:
-              blocks.push(
-                new UndergroundBlock(
-                  { x: i * 100, y: 400 },
-                  "leftTop",
-                  "underground"
-                )
-              );
-              break;
-            case 8:
-              blocks.push(
-                new UndergroundBlock(
-                  { x: i * 100, y: 400 },
-                  "rightTop",
-                  "underground"
-                )
-              );
-              break;
-            case 9:
-            case 10:
-            case 11:
-            case 12:
-            case 13:
-              break;
-            default:
-              break;
+          if (
+            i % 12 === 0 ||
+            i % 12 === 1 ||
+            i % 12 === 2 ||
+            i % 12 === 3 ||
+            i % 12 === 4
+          )
+            return;
+          else if (i % 12 === 5) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 400 }, "leftTop", type)
+            );
+          } else if (i % 12 === 6) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 400 }, "rightTop", type)
+            );
+          } else if (
+            i % 12 === 7 ||
+            i % 12 === 8 ||
+            i % 12 === 9 ||
+            i % 12 === 10 ||
+            i % 12 === 11
+          ) {
+            return;
           }
         });
-      // 보너스 ( 우측 상단 블록 )
-      blocks.push(
-        new UndergroundBlock({ x: 1000, y: 200 }, "leftArc", "underground")
-      );
-      blocks.push(
-        new UndergroundBlock({ x: 1100, y: 200 }, "horizontal", "underground")
-      );
-      blocks.push(
-        new UndergroundBlock({ x: 1200, y: 200 }, "rightArc", "underground")
-      );
     }
     // 눈 맵
     else if (type === "snow") {
       // 1층
-      Array(Math.round(Math.round(innerWidth / 100)))
+      Array(Math.ceil((innerWidth * 6) / 100))
         .fill(null)
         .forEach((v, i) =>
-          blocks.push(new SnowBlock({ x: i * 100, y: 900 }, "mid", "snow"))
+          blocks.push(new GroundBlock({ x: i * 100, y: 900 }, "mid", type))
         );
       // 2층
-      Array(Math.round(Math.round(innerWidth / 100)))
+      Array(Math.ceil((innerWidth * 6) / 100))
         .fill(null)
         .forEach((v, i) => {
-          switch (i) {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-              blocks.push(new SnowBlock({ x: i * 100, y: 800 }, "top", "snow"));
-              break;
-            case 4:
-              blocks.push(
-                new SnowBlock({ x: i * 100, y: 800 }, "leftTopAngle", "snow")
-              );
-              break;
-            case 5:
-            case 6:
-            case 7:
-            case 8:
-            case 9:
-            case 10:
-              blocks.push(new SnowBlock({ x: i * 100, y: 800 }, "mid", "snow"));
-              break;
-            case 11:
-              blocks.push(
-                new SnowBlock({ x: i * 100, y: 800 }, "rightTopAngle", "snow")
-              );
-              break;
-            case 12:
-            case 13:
-              blocks.push(new SnowBlock({ x: i * 100, y: 800 }, "top", "snow"));
-              break;
-            default:
-              blocks.push(new SnowBlock({ x: i * 100, y: 800 }, "top", "snow"));
-              break;
+          if (i % 12 === 0 || i % 12 === 1) {
+            blocks.push(new GroundBlock({ x: i * 100, y: 800 }, "top", type));
+          } else if (i % 12 === 2) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 800 }, "leftTopAngle", type)
+            );
+          } else if (
+            i % 12 === 3 ||
+            i % 12 === 4 ||
+            i % 12 === 5 ||
+            i % 12 === 6 ||
+            i % 12 === 7 ||
+            i % 12 === 8
+          ) {
+            blocks.push(new GroundBlock({ x: i * 100, y: 800 }, "mid", type));
+          } else if (i % 12 === 9) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 800 }, "rightTopAngle", type)
+            );
+          } else if (i % 12 === 10 || i % 12 === 11) {
+            blocks.push(new GroundBlock({ x: i * 100, y: 800 }, "top", type));
           }
         });
       // 3층
-      Array(Math.round(Math.round(innerWidth / 100)))
+      Array(Math.ceil((innerWidth * 6) / 100))
         .fill(null)
         .forEach((v, i) => {
-          switch (i) {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-              break;
-            case 4:
-              blocks.push(
-                new SnowBlock({ x: i * 100, y: 700 }, "leftTop", "snow")
-              );
-              break;
-            case 5:
-              blocks.push(
-                new SnowBlock({ x: i * 100, y: 700 }, "leftTopAngle", "snow")
-              );
-              break;
-            case 6:
-            case 7:
-            case 8:
-            case 9:
-              blocks.push(new SnowBlock({ x: i * 100, y: 700 }, "mid", "snow"));
-              break;
-            case 10:
-              blocks.push(
-                new SnowBlock({ x: i * 100, y: 700 }, "rightTopAngle", "snow")
-              );
-              break;
-            case 11:
-              blocks.push(
-                new SnowBlock({ x: i * 100, y: 700 }, "rightTop", "snow")
-              );
-              break;
-            case 12:
-            case 13:
-              break;
-
-            default:
-              break;
+          if (i % 12 === 0 || i % 12 === 1) return;
+          else if (i % 12 === 2) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 700 }, "leftTop", type)
+            );
+          } else if (i % 12 === 3) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 700 }, "leftTopAngle", type)
+            );
+          } else if (
+            i % 12 === 4 ||
+            i % 12 === 5 ||
+            i % 12 === 6 ||
+            i % 12 === 7
+          ) {
+            blocks.push(new GroundBlock({ x: i * 100, y: 700 }, "mid", type));
+          } else if (i % 12 === 8) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 700 }, "rightTopAngle", type)
+            );
+          } else if (i % 12 === 9) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 700 }, "rightTop", type)
+            );
+          } else if (i % 12 === 10 || i % 12 === 11) {
+            return;
           }
         });
       // 4층
-      Array(Math.round(Math.round(innerWidth / 100)))
+      Array(Math.ceil((innerWidth * 6) / 100))
         .fill(null)
         .forEach((v, i) => {
-          switch (i) {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-              break;
-            case 5:
-              blocks.push(
-                new SnowBlock({ x: i * 100, y: 600 }, "leftTop", "snow")
-              );
-              break;
-            case 6:
-              blocks.push(
-                new SnowBlock({ x: i * 100, y: 600 }, "leftTopAngle", "snow")
-              );
-              break;
-            case 7:
-            case 8:
-              blocks.push(new SnowBlock({ x: i * 100, y: 600 }, "mid", "snow"));
-              break;
-            case 9:
-              blocks.push(
-                new SnowBlock({ x: i * 100, y: 600 }, "rightTopAngle", "snow")
-              );
-              break;
-            case 10:
-              blocks.push(
-                new SnowBlock({ x: i * 100, y: 600 }, "rightTop", "snow")
-              );
-              break;
-            case 11:
-            case 12:
-            case 13:
-              break;
-            default:
-              break;
+          if (i % 12 === 0 || i % 12 === 1 || i % 12 === 2) return;
+          else if (i % 12 === 3) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 600 }, "leftTop", type)
+            );
+          } else if (i % 12 === 4) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 600 }, "leftTopAngle", type)
+            );
+          } else if (i % 12 === 5 || i % 12 === 6) {
+            blocks.push(new GroundBlock({ x: i * 100, y: 600 }, "mid", type));
+          } else if (i % 12 === 7) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 600 }, "rightTopAngle", type)
+            );
+          } else if (i % 12 == 8) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 600 }, "rightTop", type)
+            );
+          } else if (i % 12 === 9 || i % 12 === 10 || i % 12 === 11) {
+            return;
           }
         });
       // 5층
-      Array(Math.round(Math.round(innerWidth / 100)))
+      Array(Math.ceil((innerWidth * 6) / 100))
         .fill(null)
         .forEach((v, i) => {
-          switch (i) {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-            case 5:
-              break;
-            case 6:
-              blocks.push(
-                new SnowBlock({ x: i * 100, y: 500 }, "leftTop", "snow")
-              );
-              break;
-            case 7:
-              blocks.push(
-                new SnowBlock({ x: i * 100, y: 500 }, "leftTopAngle", "snow")
-              );
-              break;
-            case 8:
-              blocks.push(
-                new SnowBlock({ x: i * 100, y: 500 }, "rightTopAngle", "snow")
-              );
-              break;
-            case 9:
-              blocks.push(
-                new SnowBlock({ x: i * 100, y: 500 }, "rightTop", "snow")
-              );
-              break;
-            case 10:
-            case 11:
-            case 12:
-            case 13:
-              break;
-            default:
-              break;
+          if (i % 12 === 0 || i % 12 === 1 || i % 12 === 2 || i % 12 === 3)
+            return;
+          else if (i % 12 === 4) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 500 }, "leftTop", type)
+            );
+          } else if (i % 12 === 5) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 500 }, "leftTopAngle", type)
+            );
+          } else if (i % 12 === 6) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 500 }, "rightTopAngle", type)
+            );
+          } else if (i % 12 === 7) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 500 }, "rightTop", type)
+            );
+          } else if (
+            i % 12 === 8 ||
+            i % 12 === 9 ||
+            i % 12 === 10 ||
+            i % 12 === 11
+          ) {
+            return;
           }
         });
       // 6층
-      Array(Math.round(Math.round(innerWidth / 100)))
+      Array(Math.ceil((innerWidth * 6) / 100))
         .fill(null)
         .forEach((v, i) => {
-          switch (i) {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-            case 5:
-            case 6:
-              break;
-            case 7:
-              blocks.push(
-                new SnowBlock({ x: i * 100, y: 400 }, "leftTop", "snow")
-              );
-              break;
-            case 8:
-              blocks.push(
-                new SnowBlock({ x: i * 100, y: 400 }, "rightTop", "snow")
-              );
-              break;
-            case 9:
-            case 10:
-            case 11:
-            case 12:
-            case 13:
-              break;
-            default:
-              break;
+          if (
+            i % 12 === 0 ||
+            i % 12 === 1 ||
+            i % 12 === 2 ||
+            i % 12 === 3 ||
+            i % 12 === 4
+          )
+            return;
+          else if (i % 12 === 5) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 400 }, "leftTop", type)
+            );
+          } else if (i % 12 === 6) {
+            blocks.push(
+              new GroundBlock({ x: i * 100, y: 400 }, "rightTop", type)
+            );
+          } else if (
+            i % 12 === 7 ||
+            i % 12 === 8 ||
+            i % 12 === 9 ||
+            i % 12 === 10 ||
+            i % 12 === 11
+          ) {
+            return;
           }
         });
-      // 보너스 ( 우측 상단 블록 )
-      blocks.push(new SnowBlock({ x: 1000, y: 200 }, "leftArc", "snow"));
-      blocks.push(new SnowBlock({ x: 1100, y: 200 }, "horizontal", "snow"));
-      blocks.push(new SnowBlock({ x: 1200, y: 200 }, "rightArc", "snow"));
     }
+
+    // 랜덤 위치
+    Array(10)
+      .fill(null)
+      .forEach((v, i) => {
+        // 0 ~ (innerWidth * 6) - 300
+        const randomX = Math.floor(Math.random() * (innerWidth * 6 - 300));
+        // 300 ~ 600
+        const randomY = candidateY[Math.floor(Math.random() * 2)];
+
+        blocks.push(
+          new GroundBlock({ x: randomX + 0, y: randomY }, "leftArc", type)
+        );
+        blocks.push(
+          new GroundBlock({ x: randomX + 100, y: randomY }, "horizontal", type)
+        );
+        blocks.push(
+          new GroundBlock({ x: randomX + 200, y: randomY }, "rightArc", type)
+        );
+      });
   }
 
   /**
@@ -849,170 +552,73 @@ export default class MapManager {
    * @param blocks 생성할 블록을 저장할 블록 배열
    */
   private createStraight(blocks: Block[], type: MapType) {
+    // 랜덤한 블록 Y위치 후보
+    const candidateY = [600, 500, 400, 300];
+
     // 지상 맵
     if (type === "ground") {
       // 1층
-      Array(Math.round(Math.round(innerWidth / 100)))
+      Array(Math.ceil((innerWidth * 6) / 100))
         .fill(null)
         .forEach((v, i) =>
-          blocks.push(new GroundBlock({ x: i * 100, y: 900 }, "mid", "ground"))
+          blocks.push(new GroundBlock({ x: i * 100, y: 900 }, "mid", type))
         );
       // 2층
-      Array(Math.round(Math.round(innerWidth / 100)))
+      Array(Math.ceil((innerWidth * 6) / 100))
         .fill(null)
         .forEach((v, i) => {
-          switch (i) {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-            case 5:
-            case 6:
-            case 7:
-            case 8:
-            case 9:
-            case 10:
-            case 11:
-            case 12:
-            case 13:
-              blocks.push(
-                new GroundBlock({ x: i * 100, y: 800 }, "top", "ground")
-              );
-              break;
-            default:
-              blocks.push(
-                new GroundBlock({ x: i * 100, y: 800 }, "top", "ground")
-              );
-              break;
-          }
+          blocks.push(new GroundBlock({ x: i * 100, y: 800 }, "top", type));
         });
-
-      // 보너스 ( 우측 상단 블록 )
-      blocks.push(new GroundBlock({ x: 1000, y: 500 }, "leftArc", "ground"));
-      blocks.push(new GroundBlock({ x: 1100, y: 500 }, "horizontal", "ground"));
-      blocks.push(new GroundBlock({ x: 1200, y: 500 }, "rightArc", "ground"));
-
-      // 보너스 ( 좌측 상단 블록 )
-      blocks.push(new GroundBlock({ x: 200, y: 500 }, "leftArc", "ground"));
-      blocks.push(new GroundBlock({ x: 300, y: 500 }, "horizontal", "ground"));
-      blocks.push(new GroundBlock({ x: 400, y: 500 }, "rightArc", "ground"));
     }
     // 지하 맵
     else if (type === "underground") {
       // 1층
-      Array(Math.round(Math.round(innerWidth / 100)))
+      Array(Math.ceil((innerWidth * 6) / 100))
         .fill(null)
         .forEach((v, i) =>
-          blocks.push(
-            new UndergroundBlock({ x: i * 100, y: 900 }, "mid", "underground")
-          )
+          blocks.push(new UndergroundBlock({ x: i * 100, y: 900 }, "mid", type))
         );
       // 2층
-      Array(Math.round(Math.round(innerWidth / 100)))
+      Array(Math.ceil((innerWidth * 6) / 100))
         .fill(null)
-        .forEach((v, i) => {
-          switch (i) {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-            case 5:
-            case 6:
-            case 7:
-            case 8:
-            case 9:
-            case 10:
-            case 11:
-            case 12:
-            case 13:
-              blocks.push(
-                new UndergroundBlock(
-                  { x: i * 100, y: 800 },
-                  "top",
-                  "underground"
-                )
-              );
-              break;
-            default:
-              blocks.push(
-                new UndergroundBlock(
-                  { x: i * 100, y: 800 },
-                  "top",
-                  "underground"
-                )
-              );
-              break;
-          }
-        });
-
-      // 보너스 ( 우측 상단 블록 )
-      blocks.push(
-        new UndergroundBlock({ x: 1000, y: 500 }, "leftArc", "underground")
-      );
-      blocks.push(
-        new UndergroundBlock({ x: 1100, y: 500 }, "horizontal", "underground")
-      );
-      blocks.push(
-        new UndergroundBlock({ x: 1200, y: 500 }, "rightArc", "underground")
-      );
-
-      // 보너스 ( 좌측 상단 블록 )
-      blocks.push(
-        new UndergroundBlock({ x: 200, y: 500 }, "leftArc", "underground")
-      );
-      blocks.push(
-        new UndergroundBlock({ x: 300, y: 500 }, "horizontal", "underground")
-      );
-      blocks.push(
-        new UndergroundBlock({ x: 400, y: 500 }, "rightArc", "underground")
-      );
+        .forEach((v, i) =>
+          blocks.push(new UndergroundBlock({ x: i * 100, y: 800 }, "top", type))
+        );
     }
     // 눈 맵
     else if (type === "snow") {
       // 1층
-      Array(Math.round(Math.round(innerWidth / 100)))
+      Array(Math.ceil((innerWidth * 6) / 100))
         .fill(null)
         .forEach((v, i) =>
-          blocks.push(new SnowBlock({ x: i * 100, y: 900 }, "mid", "snow"))
+          blocks.push(new SnowBlock({ x: i * 100, y: 900 }, "mid", type))
         );
       // 2층
-      Array(Math.round(Math.round(innerWidth / 100)))
+      Array(Math.ceil((innerWidth * 6) / 100))
         .fill(null)
-        .forEach((v, i) => {
-          switch (i) {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-            case 5:
-            case 6:
-            case 7:
-            case 8:
-            case 9:
-            case 10:
-            case 11:
-            case 12:
-            case 13:
-              blocks.push(new SnowBlock({ x: i * 100, y: 800 }, "top", "snow"));
-              break;
-            default:
-              blocks.push(new SnowBlock({ x: i * 100, y: 800 }, "top", "snow"));
-              break;
-          }
-        });
-
-      // 보너스 ( 우측 상단 블록 )
-      blocks.push(new SnowBlock({ x: 1000, y: 500 }, "leftArc", "snow"));
-      blocks.push(new SnowBlock({ x: 1100, y: 500 }, "horizontal", "snow"));
-      blocks.push(new SnowBlock({ x: 1200, y: 500 }, "rightArc", "snow"));
-
-      // 보너스 ( 좌측 상단 블록 )
-      blocks.push(new SnowBlock({ x: 200, y: 500 }, "leftArc", "snow"));
-      blocks.push(new SnowBlock({ x: 300, y: 500 }, "horizontal", "snow"));
-      blocks.push(new SnowBlock({ x: 400, y: 500 }, "rightArc", "snow"));
+        .forEach((v, i) =>
+          blocks.push(new SnowBlock({ x: i * 100, y: 800 }, "top", type))
+        );
     }
+
+    // 랜덤 위치
+    Array(10)
+      .fill(null)
+      .forEach((v, i) => {
+        // 0 ~ (innerWidth * 6) - 300
+        const randomX = Math.floor(Math.random() * (innerWidth * 6 - 300));
+        // 300 ~ 600
+        const randomY = candidateY[Math.floor(Math.random() * 4)];
+
+        blocks.push(
+          new GroundBlock({ x: randomX + 0, y: randomY }, "leftArc", type)
+        );
+        blocks.push(
+          new GroundBlock({ x: randomX + 100, y: randomY }, "horizontal", type)
+        );
+        blocks.push(
+          new GroundBlock({ x: randomX + 200, y: randomY }, "rightArc", type)
+        );
+      });
   }
 }

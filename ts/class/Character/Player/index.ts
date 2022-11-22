@@ -48,6 +48,7 @@ export default abstract class Player extends Character {
   protected abstract draw(): void;
   public abstract die(): void;
   public abstract trample(): void;
+  protected abstract viewPoint(): void;
 
   /**
    * 키보드 입력에 의한 출력 실행
@@ -61,6 +62,8 @@ export default abstract class Player extends Character {
     this.crawl();
     // 점프(상승) 처리
     this.jump();
+    // 시점 변화
+    this.viewPoint();
   }
 
   // is jumping
