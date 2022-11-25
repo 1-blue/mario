@@ -165,9 +165,9 @@ export default class Mario extends Player {
     if (this.state === "small") {
       this.motion = "stand";
 
-      // 점프중이 아니라면
+      // 일어서면서 점프중이 아니라면
       if (key === "ArrowDown" && !this.isJumping()) {
-        this.pos.y -= this.keyTable.height - this.keyTable.crawlHeight;
+        this.pos.y -= this.keyTable.height - this.keyTable.crawlHeight + 10;
       }
     }
   }

@@ -73,6 +73,22 @@ export default class CollisionManager {
 
           return;
         }
+        // "아래 -> 위" 충돌인 경우
+        const isTop = charactor.pos.y - bBottom;
+        if (
+          isTop < 0 &&
+          bTop < charactor.pos.y + charactor.size.h - charactor.fallSpeed.v
+        ) {
+          if (charactor instanceof Player) {
+            charactor.jumping.destination = charactor.pos.y;
+            charactor.fallSpeed.v = charactor.fallSpeed.min;
+            charactor.jumping.isUp = false;
+            charactor.jumping.isDown = true;
+
+            return;
+          }
+        }
+
         // "위 -> 아래" 충돌인 경우
         charactor.pos.y = bTop - charactor.size.h;
       }
@@ -83,8 +99,8 @@ export default class CollisionManager {
   public collisionPAndE(player: Player, enemies: Enemy[]) {
     if (player instanceof Mario && player.motion === "die") return;
 
-    // 삭제될 적의 인덱스
-    let targetEnemy: Enemy | null = null;
+    // 삭제될 적들 ( 죽은 적 )
+    let targetEnemies: Enemy[] = [];
 
     // 플레이어의 상하좌우 좌표
     const { x, y } = player.pos;
@@ -113,7 +129,7 @@ export default class CollisionManager {
         eTop <= pBottom &&
         eBottom >= pTop
       ) {
-        // "좌 -> 우" 충돌인 경우
+        // 플레이어 기준 "좌 -> 우" 충돌인 경우
         const isLeft = player.prevPos.x + player.size.w - eLeft;
         if (
           isLeft > 0 &&
@@ -122,31 +138,29 @@ export default class CollisionManager {
           player.die();
           return;
         }
-        // "우 -> 좌" 충돌인 경우
+        // 플레이어 기준 "우 -> 좌" 충돌인 경우
         const isRight = player.prevPos.x - eRight;
         if (
-          isRight > 0 &&
+          isRight < 0 &&
           eTop < player.pos.y + player.size.h - player.fallSpeed.v
         ) {
           player.die();
           return;
         }
-        // "아래 -> 위" 충돌인 경우
-        // 사망3
 
         // "위 -> 아래" 충돌인 경우
         player.pos.y = eTop - player.size.h;
 
         // 적 죽이기
         enemy.die();
-        targetEnemy = enemy;
+        targetEnemies.push(enemy);
 
         // 플레이어 점프
         player.trample();
       }
     });
 
-    return targetEnemy;
+    return targetEnemies;
   }
 
   // 적과 적 충돌
@@ -205,8 +219,6 @@ export default class CollisionManager {
 
             return;
           }
-          // "아래 -> 위" 충돌인 경우
-          // 사망3
 
           // "위 -> 아래" 충돌인 경우
           enemy.pos.y = e2Top - enemy.size.h;

@@ -289,7 +289,7 @@ export default class GameManager {
       this.collisionManager!.collisionCAndB(enemy, this.blocks)
     );
     this.collisionManager.CollisionEandE(this.enemies);
-    const deadEnemy = this.collisionManager.collisionPAndE(
+    const deadEnemies = this.collisionManager.collisionPAndE(
       this.player,
       this.enemies
     );
@@ -299,9 +299,11 @@ export default class GameManager {
     this.collisionManager.moveRangeLimitEnemy(this.enemies);
 
     // 적이 죽었다면
-    if (deadEnemy) {
+    if (deadEnemies && deadEnemies.length !== 0) {
       setTimeout(() => {
-        this.enemies = this.enemies.filter((enemy) => enemy !== deadEnemy);
+        deadEnemies.forEach((e) => {
+          this.enemies = this.enemies.filter((enemy) => enemy !== e);
+        });
       }, 500);
     }
 
