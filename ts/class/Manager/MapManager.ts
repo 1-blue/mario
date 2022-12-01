@@ -555,18 +555,31 @@ export default class MapManager {
     // 랜덤한 블록 Y위치 후보
     const candidateY = [600, 500, 400, 300];
 
+    // 블록을 비울 랜덤한 공간
+    const randomPosX = Array(6)
+      .fill(null)
+      .map(() => Math.ceil((Math.random() * (innerWidth * 6)) / 100));
+
+    console.log(randomPosX);
+
     // 지상 맵
     if (type === "ground") {
       // 1층
       Array(Math.ceil((innerWidth * 6) / 100))
         .fill(null)
-        .forEach((v, i) =>
-          blocks.push(new GroundBlock({ x: i * 100, y: 900 }, "mid", type))
-        );
+        .forEach((v, i) => {
+          if (randomPosX.find((v) => v === i || v === i - 1 || v === i + 1))
+            return;
+
+          blocks.push(new GroundBlock({ x: i * 100, y: 900 }, "mid", type));
+        });
       // 2층
       Array(Math.ceil((innerWidth * 6) / 100))
         .fill(null)
         .forEach((v, i) => {
+          if (randomPosX.find((v) => v === i || v === i - 1 || v === i + 1))
+            return;
+
           blocks.push(new GroundBlock({ x: i * 100, y: 800 }, "top", type));
         });
     }
@@ -575,31 +588,62 @@ export default class MapManager {
       // 1층
       Array(Math.ceil((innerWidth * 6) / 100))
         .fill(null)
-        .forEach((v, i) =>
-          blocks.push(new UndergroundBlock({ x: i * 100, y: 900 }, "mid", type))
-        );
+        .forEach((v, i) => {
+          if (randomPosX.find((v) => v === i || v === i - 1 || v === i + 1))
+            return;
+
+          blocks.push(
+            new UndergroundBlock({ x: i * 100, y: 900 }, "mid", type)
+          );
+        });
       // 2층
       Array(Math.ceil((innerWidth * 6) / 100))
         .fill(null)
-        .forEach((v, i) =>
-          blocks.push(new UndergroundBlock({ x: i * 100, y: 800 }, "top", type))
-        );
+        .forEach((v, i) => {
+          if (randomPosX.find((v) => v === i || v === i - 1 || v === i + 1))
+            return;
+
+          blocks.push(
+            new UndergroundBlock({ x: i * 100, y: 800 }, "top", type)
+          );
+        });
     }
     // 눈 맵
     else if (type === "snow") {
       // 1층
       Array(Math.ceil((innerWidth * 6) / 100))
         .fill(null)
-        .forEach((v, i) =>
-          blocks.push(new SnowBlock({ x: i * 100, y: 900 }, "mid", type))
-        );
+        .forEach((v, i) => {
+          if (randomPosX.find((v) => v === i || v === i - 1 || v === i + 1))
+            return;
+
+          blocks.push(new SnowBlock({ x: i * 100, y: 900 }, "mid", type));
+        });
       // 2층
       Array(Math.ceil((innerWidth * 6) / 100))
         .fill(null)
-        .forEach((v, i) =>
-          blocks.push(new SnowBlock({ x: i * 100, y: 800 }, "top", type))
-        );
+        .forEach((v, i) => {
+          if (randomPosX.find((v) => v === i || v === i - 1 || v === i + 1))
+            return;
+
+          blocks.push(new SnowBlock({ x: i * 100, y: 800 }, "top", type));
+        });
     }
+
+    // 낭떠러지
+    randomPosX.forEach((v) => {
+      // 좌측
+      blocks.push(
+        new GroundBlock({ x: (v - 1) * 100, y: 800 }, "rightTop", type)
+      );
+      blocks.push(new GroundBlock({ x: (v - 1) * 100, y: 900 }, "right", type));
+
+      // 우측
+      blocks.push(
+        new GroundBlock({ x: (v + 1) * 100, y: 800 }, "leftTop", type)
+      );
+      blocks.push(new GroundBlock({ x: (v + 1) * 100, y: 900 }, "left", type));
+    });
 
     // 랜덤 위치
     Array(10)

@@ -11,6 +11,7 @@ import type {
   Position,
   Size,
 } from "../../../types/index";
+import GameManager from "../../Manager/GameManager";
 
 /**
  * 굼바 클래스
@@ -83,6 +84,14 @@ export default class Goomba extends Enemy {
       }
     } else {
       this.fallSpeed.v = this.fallSpeed.min;
+    }
+
+    // 맵밖에 떨어진 경우
+    if (this.pos.y >= innerHeight + this.size.h * 2) {
+      this.motion = "die";
+
+      const gameManager = new GameManager();
+      gameManager.removeEnemy(this);
     }
   }
 

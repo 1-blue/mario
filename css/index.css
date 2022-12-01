@@ -21,7 +21,43 @@ body {
   background-color: gray;
 }
 
-#ui {
+/* ==========  ========== */
+.active {
+  outline: 2px solid #6b7280;
+  outline-offset: 2px;
+  outline-width: 4px;
+  
+  background-color: #6b7280 !important;
+}
+.none {
+  display: none !important;
+}
+#play-ui .score {
+  position: fixed;
+  top: 4vh;
+  right: 4vw;
+  z-index: 10;
+
+  font-size: 1.4rem;
+  font-weight: bold;
+
+  white-space: pre-line;
+}
+#play-ui .enemy {
+  position: fixed;
+  top: 8vh;
+  right: 4vw;
+  z-index: 10;
+
+  font-size: 1.4rem;
+  font-weight: bold;
+
+  white-space: pre-line;
+}
+
+/* ========== start/end ui ========== */
+#start-ui,
+#end-ui {
   position: fixed;
   inset: 0;
   width: 100vw;
@@ -29,13 +65,15 @@ body {
 
   font-family: 'Jua', sans-serif;
 }
-#ui > ul {
+#start-ui > ul,
+#end-ui > ul {
   position: absolute;
   width: 100%;
   display: flex;
   justify-content: center;
 }
-#ui > h1 {
+#start-ui > h1,
+#end-ui > h1 {
   position: absolute;
   top: 20%;
   left: 0%;
@@ -46,12 +84,16 @@ body {
   font-size: 3rem;
   font-weight: bold;
 }
-#ui > ul > li {
+#start-ui > ul > li {
   margin-right: 5%;
 
   white-space: nowrap;
 }
-#ui > ul > li > button[type="button"] {
+#end-ui > ul > li {
+  white-space: nowrap;
+}
+#start-ui > ul > li > button[type="button"],
+#end-ui > ul > li > button[type="button"] {
   padding: 0.4em 1em;
 
   border: none;
@@ -68,25 +110,16 @@ body {
 
   cursor: pointer;
 }
-#ui > ul > li > button[type="button"]:hover, #ui > ul > li > button[type="button"]:focus {
+#start-ui > ul > li > button[type="button"]:hover, #start-ui > ul > li > button[type="button"]:focus,
+#end-ui > ul > li > button[type="button"]:hover, #end-ui > ul > li > button[type="button"]:focus {
   outline: 2px solid #6b7280;
   outline-offset: 2px;
   outline-width: 4px;
   
   background-color: #6b7280;
 }
-#ui > ul > li > button[data-start="start"] {
+#start-ui > ul > li > button[data-start="start"] {
   padding: 0.6em 1.2em;
 
   font-size: 2rem
-}
-.active {
-  outline: 2px solid #6b7280;
-  outline-offset: 2px;
-  outline-width: 4px;
-  
-  background-color: #6b7280 !important;
-}
-.none {
-  display: none !important;
 }

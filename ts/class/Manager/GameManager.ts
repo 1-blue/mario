@@ -29,8 +29,13 @@ export default class GameManager {
   private blocks!: Block[];
   private enemies!: Enemy[];
 
-  // 렌더링할 UI Element
-  private $UI!: HTMLElement;
+  // 렌더링할 게임중/시작/종료 UI Element
+  private $playUI!: HTMLElement;
+  private $startUI!: HTMLElement;
+  private $endUI!: HTMLElement;
+
+  // 점수
+  private score!: number;
 
   constructor() {
     // 싱글톤으로 구현
@@ -48,7 +53,11 @@ export default class GameManager {
     this.blocks = [];
     this.enemies = [];
 
-    this.$UI = document.getElementById("ui")!;
+    this.$playUI = document.getElementById("play-ui")!;
+    this.$startUI = document.getElementById("start-ui")!;
+    this.$endUI = document.getElementById("end-ui")!;
+
+    this.score = 0;
 
     // 초기화
     this.init();
@@ -67,7 +76,7 @@ export default class GameManager {
 
     // 시작 UI
     if (this.state === "start") {
-      this.renderStartUI();
+      this.renderstartUI();
     }
     // 게임중 UI
     else if (this.state === "play") {
@@ -75,6 +84,7 @@ export default class GameManager {
     }
     // 게임끝 UI
     else if (this.state === "end") {
+      this.renderEndUI();
     }
   }
 
@@ -102,7 +112,9 @@ export default class GameManager {
     this.mapManager.CreateMap(this.blocks, this.mapShape, this.mapType);
 
     // UI 숨기기
-    this.$UI.classList.add("none");
+    this.$playUI.classList.remove("none");
+    this.$startUI.classList.add("none");
+    this.$endUI.classList.add("none");
 
     // "ctx" 등록
     Block.ctx = GameManager.ctx;
@@ -132,6 +144,15 @@ export default class GameManager {
         );
       });
 
+    // 점수 초기화
+    this.score = 0;
+
+    const $score = this.$playUI.querySelector("#play-ui .score");
+    if ($score) $score.innerHTML = "Score : " + this.score;
+
+    const $enemy = this.$playUI.querySelector("#play-ui .enemy");
+    if ($enemy) $enemy.innerHTML = "Enemy : " + this.enemies.length;
+
     // 키 누름 시작 이벤트 등록
     window.addEventListener("keydown", this.keydownEvent());
 
@@ -143,7 +164,7 @@ export default class GameManager {
    * 게임 리셋
    */
   public reset() {
-    this.state = "start";
+    this.state = "end";
 
     this.collisionManager = null;
     this.player = null;
@@ -155,19 +176,21 @@ export default class GameManager {
   /**
    * 게임 시작 UI
    */
-  public renderStartUI() {
+  private renderstartUI() {
     document.querySelector("html")!.style.overflowX = "hidden";
 
     // UI 보이기
-    this.$UI.classList.remove("none");
+    this.$playUI.classList.add("none");
+    this.$startUI.classList.remove("none");
+    this.$endUI.classList.add("none");
 
     // 이미 UI를 채웠다면
-    if (this.$UI.childElementCount !== 0) return;
+    if (this.$startUI.childElementCount !== 0) return;
 
     // 타이틀
     const $$title = document.createElement("h1");
     $$title.innerText = "TS + Canvas로 만든 마리오 웹 게임";
-    this.$UI.appendChild($$title);
+    this.$startUI.appendChild($$title);
 
     // 맵 형태 선택
     const $$mapShape = document.createElement("ul");
@@ -188,7 +211,7 @@ export default class GameManager {
     $$mapShapeLI1.appendChild($$mapShapeBtn1);
     $$mapShapeLI2.appendChild($$mapShapeBtn2);
     $$mapShape.append($$mapShapeLI1, $$mapShapeLI2);
-    this.$UI.appendChild($$mapShape);
+    this.$startUI.appendChild($$mapShape);
 
     // 맵 타입 선택
     const $$mapType = document.createElement("ul");
@@ -215,7 +238,7 @@ export default class GameManager {
     $$mapTypeLI2.appendChild($$mapTypeBtn2);
     $$mapTypeLI3.appendChild($$mapTypeBtn3);
     $$mapType.append($$mapTypeLI1, $$mapTypeLI2, $$mapTypeLI3);
-    this.$UI.appendChild($$mapType);
+    this.$startUI.appendChild($$mapType);
 
     // 시작 버튼
     const $$startBtnUL = document.createElement("ul");
@@ -228,10 +251,10 @@ export default class GameManager {
 
     $$startBtnLI.appendChild($$startBtn);
     $$startBtnUL.appendChild($$startBtnLI);
-    this.$UI.appendChild($$startBtnUL);
+    this.$startUI.appendChild($$startBtnUL);
 
-    // 이벤트 등록
-    this.$UI.addEventListener("click", (e) => {
+    // 이벤트 등록 ( 버블링 )
+    this.$startUI.addEventListener("click", (e) => {
       if (!(e.target instanceof HTMLElement)) return;
 
       const { type, shape, start } = e.target.dataset;
@@ -274,6 +297,11 @@ export default class GameManager {
 
     if (!this.player || !this.background || !this.collisionManager) return;
 
+    // UI 보이기
+    this.$playUI.classList.remove("none");
+    this.$startUI.classList.add("none");
+    this.$endUI.classList.add("none");
+
     // 블록 렌더링
     this.blocks.forEach((block) => block.draw());
 
@@ -298,18 +326,95 @@ export default class GameManager {
     this.collisionManager.moveRangeLimitPlayer(this.player);
     this.collisionManager.moveRangeLimitEnemy(this.enemies);
 
-    // 적이 죽었다면
+    // 적을 죽였다면
     if (deadEnemies && deadEnemies.length !== 0) {
       setTimeout(() => {
         deadEnemies.forEach((e) => {
           this.enemies = this.enemies.filter((enemy) => enemy !== e);
+
+          const $enemy = this.$playUI.querySelector("#play-ui .enemy");
+          if ($enemy) {
+            $enemy.innerHTML = "Enemy : " + this.enemies.length;
+          }
         });
       }, 500);
+
+      this.score += deadEnemies.length * 100;
+
+      const $score = this.$playUI.querySelector("#play-ui .score");
+      if ($score) {
+        $score.innerHTML = "Score : " + this.score;
+      }
     }
 
     // 마리오/적 렌더링
     this.enemies.forEach((enemy) => enemy.execute());
     this.player.execute();
+  }
+
+  /**
+   * 게임 종료
+   */
+  private renderEndUI() {
+    window.scrollTo(0, 0);
+    document.querySelector("html")!.style.overflowX = "hidden";
+
+    // UI 보이기
+    this.$playUI.classList.add("none");
+    this.$startUI.classList.add("none");
+    this.$endUI.classList.remove("none");
+
+    // 이미 UI를 채웠다면
+    if (this.$endUI.childElementCount !== 0) {
+      // 점수만 교체
+      const $score = document.querySelector("#end-ui .score");
+      if (!$score) return;
+      if ($score.innerHTML.includes("" + this.score)) return;
+
+      $score.innerHTML = "최종 점수 : " + this.score;
+
+      return;
+    }
+
+    // 타이틀
+    const $$title = document.createElement("h1");
+    $$title.innerText = "게임 종료";
+    this.$endUI.appendChild($$title);
+
+    // 점수
+    const $$scoreUI = document.createElement("ul");
+    const $$scoreLI = document.createElement("li");
+    $$scoreUI.style.top = "30%";
+    $$scoreLI.innerHTML = "최종 점수 : " + this.score;
+    $$scoreLI.style.fontSize = "1.8rem";
+    $$scoreLI.style.whiteSpace = "pre-wrap";
+    $$scoreLI.classList.add("score");
+
+    $$scoreUI.appendChild($$scoreLI);
+    this.$endUI.appendChild($$scoreUI);
+
+    // 재시작 버튼
+    const $$restartBtnUI = document.createElement("ul");
+    const $$restartBtnLI = document.createElement("li");
+    const $$restartBtn = document.createElement("button");
+    $$restartBtnUI.style.top = "40%";
+    $$restartBtn.type = "button";
+    $$restartBtn.innerHTML = "다시 시작";
+    $$restartBtn.dataset.restart = "restart";
+
+    $$restartBtnLI.appendChild($$restartBtn);
+    $$restartBtnUI.appendChild($$restartBtnLI);
+    this.$endUI.appendChild($$restartBtnUI);
+
+    // 이벤트 등록
+    this.$endUI.addEventListener("click", (e) => {
+      if (!(e.target instanceof HTMLElement)) return;
+
+      const { restart } = e.target.dataset;
+
+      // 시작 UI로 변경 ( 맵 선택 )
+      if (restart) this.state = "start";
+    });
   }
 
   /**
@@ -371,5 +476,18 @@ export default class GameManager {
       // 이전에 눌렀던 기록 제거
       delete this.player.keys[key];
     };
+  }
+
+  /**
+   * 떨어져서 죽은 적 제거를 위한 메서드
+   * @param enemy 떨어져서 죽은 적 객체
+   */
+  public removeEnemy(enemy: Enemy) {
+    this.enemies = this.enemies.filter((e) => e !== enemy);
+
+    const $enemy = this.$playUI.querySelector("#play-ui .enemy");
+    if ($enemy) {
+      $enemy.innerHTML = "Enemy : " + this.enemies.length;
+    }
   }
 }

@@ -278,6 +278,17 @@ export default class Mario extends Player {
           this.fallSpeed.v = this.fallSpeed.max;
         }
 
+        // 바닥까지 떨어졌다면 사망
+        if (this.pos.y > innerHeight) {
+          this.motion = "die";
+
+          setTimeout(() => {
+            // 게임 다시하기 및 기록 등 UI 렌더링
+            const gameManager = new GameManager();
+            gameManager.reset();
+          }, 1000);
+        }
+
         // 달리는 중이라면 "달리기 점프"
         if (this.isRunning()) this.motion = "jumpRun";
         // 걷는 중이라면 "점프 하강"
