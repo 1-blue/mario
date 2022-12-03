@@ -34,7 +34,7 @@ export default class MapManager {
    * @param shape 맵 형태 선택
    * @param type 맵 타입 선택
    */
-  CreateMap(blocks: Block[], shape: MapShape, type: MapType) {
+  public createMap(blocks: Block[], shape: MapShape, type: MapType) {
     switch (shape) {
       case "stairs":
         this.createStairs(blocks, type);

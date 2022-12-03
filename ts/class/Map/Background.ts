@@ -26,7 +26,7 @@ export default class Background {
   /**
    * 배경화면 그리기
    */
-  draw(type: MapType) {
+  public draw(type: MapType) {
     if (this.type !== type) {
       const image = new Image();
       image.src = `./assets/images/${type}.jpg`;

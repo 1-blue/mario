@@ -285,7 +285,7 @@ export default class Mario extends Player {
           setTimeout(() => {
             // 게임 다시하기 및 기록 등 UI 렌더링
             const gameManager = new GameManager();
-            gameManager.reset();
+            gameManager.gameOver();
           }, 1000);
         }
 
@@ -350,7 +350,7 @@ export default class Mario extends Player {
       // 게임 다시하기 및 기록 등 UI 렌더링
       const gameManager = new GameManager();
 
-      gameManager.reset();
+      gameManager.gameOver();
     }, 1000);
   }
 

@@ -21,7 +21,11 @@ export default class CollisionManager {
     CollisionManager.instance = this;
   }
 
-  // 캐릭터와 블록 충돌
+  /**
+   * 캐릭터와 블록 충돌 처리
+   * @param charactor 캐릭터 인스턴스
+   * @param blocks 블록 인스턴스들
+   */
   public collisionCAndB(charactor: Character, blocks: Block[]) {
     if (charactor instanceof Mario && charactor.motion === "die") return;
 
@@ -95,7 +99,12 @@ export default class CollisionManager {
     });
   }
 
-  // 플레이어와 적 충돌
+  /**
+   * 플레이어와 적 충돌 처리
+   * @param player 플레이어 인스턴스
+   * @param enemies 적 인스턴스들
+   * @returns 죽은 적 인스턴스들
+   */
   public collisionPAndE(player: Player, enemies: Enemy[]) {
     if (player instanceof Mario && player.motion === "die") return;
 
@@ -163,7 +172,10 @@ export default class CollisionManager {
     return targetEnemies;
   }
 
-  // 적과 적 충돌
+  /**
+   * 적과 적 충돌 처리
+   * @param enemies 적 인스턴스들
+   */
   public CollisionEandE(enemies: Enemy[]) {
     enemies.forEach((enemy, index, arr) => {
       // 죽은 굼바라면 무시
@@ -227,7 +239,10 @@ export default class CollisionManager {
     });
   }
 
-  // 플레이어 움직임 제한
+  /**
+   * 플레이어 움직임 제한 ( 맵 밖으로 이동 제한 )
+   * @param player 플레이어 인스턴스
+   */
   public moveRangeLimitPlayer(player: Player) {
     // 좌측 제한
     if (player.pos.x < 0) {
@@ -239,7 +254,10 @@ export default class CollisionManager {
     }
   }
 
-  // 적 움직임 제한
+  /**
+   * 적 움직임 제한 ( 맵 밖으로 이동 제한 )
+   * @param enemies 적 인스턴스들
+   */
   public moveRangeLimitEnemy(enemies: Enemy[]) {
     enemies.forEach((enemy) => {
       // 좌측 제한
