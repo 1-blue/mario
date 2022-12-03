@@ -65,7 +65,7 @@ export const enemyKeyTable = {
 };
 
 /**
- * 블록 키코드
+ * 블록 키 테이블
  */
 export const blockKeyTable = {
   // 지상 블록
@@ -162,5 +162,23 @@ export const blockKeyTable = {
     bottomArc: 17 * 53,
     leftArc: 18 * 53,
     circle: 19 * 53,
+  },
+};
+
+/**
+ * 오브젝트 키 테이블
+ */
+export const myObjectKeyTable = {
+  // 문
+  door: {
+    // 이미지의 "width"와 "height"
+    width: 53,
+    height: 106,
+
+    // 이미지 y위치
+    yPos: 0,
+
+    // 이미지 x 위치
+    xPos: 0,
   },
 };

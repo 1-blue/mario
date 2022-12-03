@@ -56,7 +56,7 @@ body {
 }
 
 /* ========== start/end ui ========== */
-#start-ui,
+#ready-ui,
 #end-ui {
   position: fixed;
   inset: 0;
@@ -65,14 +65,14 @@ body {
 
   font-family: 'Jua', sans-serif;
 }
-#start-ui > ul,
+#ready-ui > ul,
 #end-ui > ul {
   position: absolute;
   width: 100%;
   display: flex;
   justify-content: center;
 }
-#start-ui > h1,
+#ready-ui > h1,
 #end-ui > h1 {
   position: absolute;
   top: 20%;
@@ -84,7 +84,7 @@ body {
   font-size: 3rem;
   font-weight: bold;
 }
-#start-ui > ul > li {
+#ready-ui > ul > li {
   margin-right: 5%;
 
   white-space: nowrap;
@@ -92,7 +92,7 @@ body {
 #end-ui > ul > li {
   white-space: nowrap;
 }
-#start-ui > ul > li > button[type="button"],
+#ready-ui > ul > li > button[type="button"],
 #end-ui > ul > li > button[type="button"] {
   padding: 0.4em 1em;
 
@@ -110,7 +110,7 @@ body {
 
   cursor: pointer;
 }
-#start-ui > ul > li > button[type="button"]:hover, #start-ui > ul > li > button[type="button"]:focus,
+#ready-ui > ul > li > button[type="button"]:hover, #ready-ui > ul > li > button[type="button"]:focus,
 #end-ui > ul > li > button[type="button"]:hover, #end-ui > ul > li > button[type="button"]:focus {
   outline: 2px solid #6b7280;
   outline-offset: 2px;
@@ -118,7 +118,7 @@ body {
   
   background-color: #6b7280;
 }
-#start-ui > ul > li > button[data-start="start"] {
+#ready-ui > ul > li > button[data-start="start"] {
   padding: 0.6em 1.2em;
 
   font-size: 2rem

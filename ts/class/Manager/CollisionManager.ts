@@ -5,6 +5,7 @@ import Enemy from "../Character/Enemy/index";
 import Block from "../Block/index";
 import Mario from "../Character/Player/Mario";
 import Goomba from "../Character/Enemy/Goomba";
+import MyObject from "../MyObject/index";
 
 /**
  * 충돌 처리 매니저 ( 싱글톤 )
@@ -176,7 +177,7 @@ export default class CollisionManager {
    * 적과 적 충돌 처리
    * @param enemies 적 인스턴스들
    */
-  public CollisionEandE(enemies: Enemy[]) {
+  public collisionEandE(enemies: Enemy[]) {
     enemies.forEach((enemy, index, arr) => {
       // 죽은 굼바라면 무시
       if (enemy instanceof Goomba && enemy.motion === "die") return;
@@ -271,5 +272,43 @@ export default class CollisionManager {
         enemy.pos.x = innerWidth * 6 - enemy.size.w;
       }
     });
+  }
+
+  /**
+   * 플레이어와 오브젝트가 겹치는지 여부
+   * @param player 플레이어 객체
+   * @param object 오브젝트 객체
+   * @returns T / F
+   */
+  public collisionPandO(player: Player, object: MyObject) {
+    // 플레이어의 상하좌우 좌표
+    const { x, y } = player.pos;
+    const { w, h } = player.size;
+    const pLeft = x;
+    const pRight = x + w;
+    const pTop = y;
+    const pBottom = y + h;
+
+    {
+      // 오브젝트의 상하좌우 좌표
+      const { x, y } = object.pos;
+      const { w, h } = object.size;
+      const oLeft = x;
+      const oRight = x + w;
+      const oTop = y;
+      const oBottom = y + h;
+
+      // 플레이어와 오브젝트가 겹치는 경우
+      if (
+        oLeft <= pRight &&
+        oRight >= pLeft &&
+        oTop <= pBottom &&
+        oBottom >= pTop
+      ) {
+        return true;
+      }
+    }
+
+    return false;
   }
 }

@@ -33,18 +33,24 @@ export default class MapManager {
    * @param blocks 생성할 블록을 담을 배열
    * @param shape 맵 형태 선택
    * @param type 맵 타입 선택
+   * @param holeCount 구멍 개수
    */
-  public createMap(blocks: Block[], shape: MapShape, type: MapType) {
+  public createMap(
+    blocks: Block[],
+    shape: MapShape,
+    type: MapType,
+    holeCount: number
+  ) {
     switch (shape) {
       case "stairs":
         this.createStairs(blocks, type);
         break;
       case "straight":
-        this.createStraight(blocks, type);
+        this.createStraight(blocks, type, holeCount);
         break;
 
       default:
-        this.createStraight(blocks, type);
+        this.createStraight(blocks, type, holeCount);
         break;
     }
   }
@@ -52,6 +58,7 @@ export default class MapManager {
   /**
    * 계단맵 생성
    * @param blocks 생성할 블록을 저장할 블록 배열
+   * @param type 맵의 타입
    */
   private createStairs(blocks: Block[], type: MapType) {
     // 랜덤한 블록 Y위치 후보
@@ -550,17 +557,22 @@ export default class MapManager {
   /**
    * 직선맵 생성
    * @param blocks 생성할 블록을 저장할 블록 배열
+   * @param type 맵의 타입
+   * @param holeCount 구멍 개수
    */
-  private createStraight(blocks: Block[], type: MapType) {
+  private createStraight(blocks: Block[], type: MapType, holeCount: number) {
     // 랜덤한 블록 Y위치 후보
     const candidateY = [600, 500, 400, 300];
 
-    // 블록을 비울 랜덤한 공간
-    const randomPosX = Array(6)
+    // 블록을 비울 랜덤한 공간 ( 구멍 )
+    const randomPosX = Array(holeCount)
       .fill(null)
-      .map(() => Math.ceil((Math.random() * (innerWidth * 6)) / 100));
-
-    console.log(randomPosX);
+      .map(() => Math.ceil((Math.random() * (innerWidth * 6)) / 100))
+      .sort((a, b) => a - b)
+      .filter((v, i, arr) => {
+        if (v + 3 >= arr[i + 1]) return false;
+        return true;
+      });
 
     // 지상 맵
     if (type === "ground") {

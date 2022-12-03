@@ -7,6 +7,11 @@ import Player from "../Character/Player/index";
 import Enemy from "../Character/Enemy/index";
 import Mario from "../Character/Player/Mario";
 import Goomba from "../Character/Enemy/Goomba";
+import MyObject from "../MyObject/index";
+import Door from "../MyObject/Door";
+
+// util
+import { myObjectKeyTable } from "../../utils/index";
 
 // type
 import type { GameState, KeyType, MapShape, MapType } from "../../types/index";
@@ -32,6 +37,8 @@ import type { GameState, KeyType, MapShape, MapType } from "../../types/index";
  * @param mapType 현재 맵의 타입 ( "ground" | "underground" | "snow" )
  * @param mapShape 현재 맵의 형태 ( "stairs" | "straight" )
  * @param score 점수
+ * @param enemyCount 적 개수
+ * @param holeCount 구멍 개수
  */
 export default class GameManager {
   private static instance: GameManager;
@@ -44,6 +51,7 @@ export default class GameManager {
   private player!: Player | null;
   private blocks!: Block[];
   private enemies!: Enemy[];
+  private objects!: MyObject[];
 
   // 렌더링할 게임중/시작/종료 UI Element
   private $playUI!: HTMLElement;
@@ -55,6 +63,8 @@ export default class GameManager {
   private mapType!: MapType;
   private mapShape!: MapShape;
   private score!: number;
+  private enemyCount!: number;
+  private holeCount!: number;
 
   constructor() {
     // 싱글톤으로 구현
@@ -64,16 +74,19 @@ export default class GameManager {
     Background.ctx = GameManager.ctx;
 
     this.background = new Background();
-    this.mapManager = new MapManager(this.mapType);
+    this.mapManager = new MapManager("ground");
     this.collisionManager = new CollisionManager();
     this.player = null;
     this.blocks = [];
     this.enemies = [];
+    this.objects = [];
 
     this.state = "ready";
     this.mapType = "ground";
     this.mapShape = "straight";
     this.score = 0;
+    this.enemyCount = 20;
+    this.holeCount = 6;
 
     this.$playUI = document.getElementById("play-ui")!;
     this.$readyUI = document.getElementById("ready-ui")!;
@@ -227,7 +240,7 @@ export default class GameManager {
   private play() {
     document.querySelector("html")!.style.overflowX = "scroll";
 
-    if (!this.player || !this.background || !this.collisionManager) return;
+    if (!this.player) return;
 
     // UI 렌더링
     this.$playUI.classList.remove("none");
@@ -248,7 +261,7 @@ export default class GameManager {
     this.enemies.forEach((enemy) =>
       this.collisionManager!.collisionCAndB(enemy, this.blocks)
     );
-    this.collisionManager.CollisionEandE(this.enemies);
+    this.collisionManager.collisionEandE(this.enemies);
     const deadEnemies = this.collisionManager.collisionPAndE(
       this.player,
       this.enemies
@@ -278,6 +291,9 @@ export default class GameManager {
         $score.innerHTML = "Score : " + this.score;
       }
     }
+
+    // 오브젝트 렌더링
+    this.objects.forEach((obj) => obj.render());
 
     // 마리오/적 렌더링
     this.enemies.forEach((enemy) => enemy.execute());
@@ -363,40 +379,27 @@ export default class GameManager {
   }
 
   /**
-   * 게임 종료
+   * 다음 스테이지
    */
-  public gameOver() {
-    this.state = "end";
+  private nextState() {
+    this.enemyCount += 10;
+    this.holeCount += 2;
 
-    this.player = null;
-    this.blocks = [];
+    this.player!.pos.x = 240;
+    this.player!.pos.y = 200;
     this.enemies = [];
-  }
-
-  /**
-   * 게임 시작 시 초기화
-   */
-  private initPlay() {
-    if (!this.mapManager) return;
+    this.blocks = [];
 
     // 맵 생성
-    this.mapManager.createMap(this.blocks, this.mapShape, this.mapType);
-
-    // UI 렌더링
-    this.$playUI.classList.remove("none");
-    this.$readyUI.classList.add("none");
-    this.$endUI.classList.add("none");
-
-    // "ctx" 등록
-    Block.ctx = GameManager.ctx;
-    Mario.ctx = GameManager.ctx;
-    Goomba.ctx = GameManager.ctx;
-
-    // 플레이어(마리오) 생성
-    this.player = new Mario({ x: 240, y: 200 }, { w: 60, h: 60 });
+    this.mapManager.createMap(
+      this.blocks,
+      this.mapShape,
+      this.mapType,
+      this.holeCount
+    );
 
     // 적(굼바) 생성
-    Array(20)
+    Array(this.enemyCount)
       .fill(null)
       .map(() => {
         const randomX = Math.ceil(
@@ -411,6 +414,79 @@ export default class GameManager {
           )
         );
       });
+
+    const $score = this.$playUI.querySelector("#play-ui .score");
+    if ($score) $score.innerHTML = "Score : " + this.score;
+
+    const $enemy = this.$playUI.querySelector("#play-ui .enemy");
+    if ($enemy) $enemy.innerHTML = "Enemy : " + this.enemies.length;
+  }
+
+  /**
+   * 게임 종료
+   */
+  public gameOver() {
+    this.player = null;
+    this.blocks = [];
+    this.enemies = [];
+
+    this.state = "end";
+    this.enemyCount = 20;
+    this.holeCount = 6;
+  }
+
+  /**
+   * 게임 시작 시 초기화
+   */
+  private initPlay() {
+    if (!this.mapManager) return;
+
+    // 맵 생성
+    this.mapManager.createMap(
+      this.blocks,
+      this.mapShape,
+      this.mapType,
+      this.holeCount
+    );
+
+    // UI 렌더링
+    this.$playUI.classList.remove("none");
+    this.$readyUI.classList.add("none");
+    this.$endUI.classList.add("none");
+
+    // "ctx" 등록
+    Block.ctx = GameManager.ctx;
+    Mario.ctx = GameManager.ctx;
+    Goomba.ctx = GameManager.ctx;
+    MyObject.ctx = GameManager.ctx;
+
+    // 플레이어(마리오) 생성
+    this.player = new Mario({ x: 200, y: 200 }, { w: 60, h: 60 });
+
+    // 적(굼바) 생성
+    Array(this.enemyCount)
+      .fill(null)
+      .map(() => {
+        const randomX = Math.ceil(
+          Math.random() * (innerWidth * 5) + innerWidth
+        );
+
+        this.enemies.push(
+          new Goomba(
+            { x: randomX, y: 600 },
+            { w: 60, h: 60 },
+            randomX % 2 === 0
+          )
+        );
+      });
+
+    // 문 생성
+    this.objects.push(
+      new Door({
+        x: innerWidth * 6 - 300,
+        y: 800 - myObjectKeyTable.door.height,
+      })
+    );
 
     // 점수 초기화
     this.score = 0;
@@ -433,6 +509,19 @@ export default class GameManager {
   private keydownEvent() {
     return (e: KeyboardEvent) => {
       if (!this.player) return;
+
+      if (e.key === "ArrowUp") {
+        const door = this.objects[0];
+
+        const isCollision = this.collisionManager.collisionPandO(
+          this.player,
+          door
+        );
+
+        if (isCollision) {
+          this.nextState();
+        }
+      }
 
       if (
         !(
