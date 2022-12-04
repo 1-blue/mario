@@ -43,9 +43,20 @@ body {
 
   white-space: pre-line;
 }
-#play-ui .enemy {
+#play-ui .coin {
   position: fixed;
   top: 8vh;
+  right: 4vw;
+  z-index: 10;
+
+  font-size: 1.4rem;
+  font-weight: bold;
+
+  white-space: pre-line;
+}
+#play-ui .enemy {
+  position: fixed;
+  top: 12vh;
   right: 4vw;
   z-index: 10;
 

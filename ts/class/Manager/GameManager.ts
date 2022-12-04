@@ -9,6 +9,7 @@ import Mario from "../Character/Player/Mario";
 import Goomba from "../Character/Enemy/Goomba";
 import MyObject from "../MyObject/index";
 import Door from "../MyObject/Door";
+import Coin from "../MyObject/Coin";
 
 // util
 import { myObjectKeyTable } from "../../utils/index";
@@ -28,6 +29,8 @@ import type { GameState, KeyType, MapShape, MapType } from "../../types/index";
  * @param player Player의 인스턴스
  * @param blocks Block의 인스턴스들
  * @param enemies Emeny의 인스턴스들
+ * @param doors Door의 인스턴스들
+ * @param coins Coin의 인스턴스들
  *
  * @param $playUI play ui Element
  * @param $readyUI ready ui Element
@@ -51,7 +54,8 @@ export default class GameManager {
   private player!: Player | null;
   private blocks!: Block[];
   private enemies!: Enemy[];
-  private objects!: MyObject[];
+  private doors!: Door[];
+  private coins!: Coin[];
 
   // 렌더링할 게임중/시작/종료 UI Element
   private $playUI!: HTMLElement;
@@ -65,6 +69,7 @@ export default class GameManager {
   private score!: number;
   private enemyCount!: number;
   private holeCount!: number;
+  private coinCount!: number;
 
   constructor() {
     // 싱글톤으로 구현
@@ -79,7 +84,8 @@ export default class GameManager {
     this.player = null;
     this.blocks = [];
     this.enemies = [];
-    this.objects = [];
+    this.doors = [];
+    this.coins = [];
 
     this.state = "ready";
     this.mapType = "ground";
@@ -87,6 +93,7 @@ export default class GameManager {
     this.score = 0;
     this.enemyCount = 20;
     this.holeCount = 6;
+    this.coinCount = 20;
 
     this.$playUI = document.getElementById("play-ui")!;
     this.$readyUI = document.getElementById("ready-ui")!;
@@ -256,17 +263,23 @@ export default class GameManager {
     // 플레이어 키보드 이벤트 처리
     this.player.process();
 
-    // 충돌 체크
+    // 플레이어 / 블록 충돌 체크
     this.collisionManager.collisionCAndB(this.player, this.blocks);
+    // 적 / 블록 충돌 체크
     this.enemies.forEach((enemy) =>
       this.collisionManager!.collisionCAndB(enemy, this.blocks)
     );
+    // 적 / 적 충돌 체크
     this.collisionManager.collisionEandE(this.enemies);
     const deadEnemies = this.collisionManager.collisionPAndE(
       this.player,
       this.enemies
     );
-
+    // 플레이어 코인 충돌체크
+    const removedCoins = this.collisionManager.collisionPandC(
+      this.player,
+      this.coins
+    );
     // 이동 제한
     this.collisionManager.moveRangeLimitPlayer(this.player);
     this.collisionManager.moveRangeLimitEnemy(this.enemies);
@@ -292,8 +305,34 @@ export default class GameManager {
       }
     }
 
-    // 오브젝트 렌더링
-    this.objects.forEach((obj) => obj.render());
+    // 코인이 먹혔다면
+    if (removedCoins.length !== 0) {
+      removedCoins.filter((c) => {
+        this.coins = this.coins.filter((coin) => coin !== c);
+      });
+
+      this.score += 100 * removedCoins.length;
+
+      const $score = this.$playUI.querySelector("#play-ui .score");
+      if ($score) {
+        $score.innerHTML = "Score : " + this.score;
+      }
+
+      const $coin = this.$playUI.querySelector("#play-ui .coin");
+      if ($coin) {
+        $coin.innerHTML = "Coin : " + this.coins.length;
+      }
+    }
+
+    // 문 렌더링
+    this.doors.forEach((door) => door.render());
+
+    // 코인 렌더링
+    Coin.count++;
+    this.coins.forEach((coin) => {
+      coin.rotate();
+      coin.render();
+    });
 
     // 마리오/적 렌더링
     this.enemies.forEach((enemy) => enemy.execute());
@@ -384,11 +423,14 @@ export default class GameManager {
   private nextState() {
     this.enemyCount += 10;
     this.holeCount += 2;
+    this.coinCount += 10;
 
     this.player!.pos.x = 240;
     this.player!.pos.y = 200;
     this.enemies = [];
     this.blocks = [];
+    this.doors = [];
+    this.coins = [];
 
     // 맵 생성
     this.mapManager.createMap(
@@ -415,11 +457,30 @@ export default class GameManager {
         );
       });
 
+    // 문 생성
+    this.doors.push(
+      new Door({
+        x: innerWidth * 6 - 300,
+        y:
+          Math.floor(innerHeight / 100) * 100 -
+          100 -
+          myObjectKeyTable.door.height,
+      })
+    );
+
+    // 코인 생성
+    Array(this.coinCount)
+      .fill(null)
+      .forEach(() => this.coins.push(new Coin()));
+
     const $score = this.$playUI.querySelector("#play-ui .score");
     if ($score) $score.innerHTML = "Score : " + this.score;
 
     const $enemy = this.$playUI.querySelector("#play-ui .enemy");
     if ($enemy) $enemy.innerHTML = "Enemy : " + this.enemies.length;
+
+    const $coin = this.$playUI.querySelector("#play-ui .coin");
+    if ($coin) $coin.innerHTML = "Coin : " + this.coins.length;
   }
 
   /**
@@ -429,10 +490,13 @@ export default class GameManager {
     this.player = null;
     this.blocks = [];
     this.enemies = [];
+    this.doors = [];
+    this.coins = [];
 
     this.state = "end";
     this.enemyCount = 20;
     this.holeCount = 6;
+    this.coinCount = 20;
   }
 
   /**
@@ -481,12 +545,20 @@ export default class GameManager {
       });
 
     // 문 생성
-    this.objects.push(
+    this.doors.push(
       new Door({
         x: innerWidth * 6 - 300,
-        y: 800 - myObjectKeyTable.door.height,
+        y:
+          Math.floor(innerHeight / 100) * 100 -
+          100 -
+          myObjectKeyTable.door.height,
       })
     );
+
+    // 코인 생성
+    Array(this.coinCount)
+      .fill(null)
+      .forEach(() => this.coins.push(new Coin()));
 
     // 점수 초기화
     this.score = 0;
@@ -496,6 +568,11 @@ export default class GameManager {
 
     const $enemy = this.$playUI.querySelector("#play-ui .enemy");
     if ($enemy) $enemy.innerHTML = "Enemy : " + this.enemies.length;
+
+    const $coin = this.$playUI.querySelector("#play-ui .coin");
+    if ($coin) {
+      $coin.innerHTML = "Coin : " + this.coins.length;
+    }
 
     // 키 누름 시작 이벤트 등록
     window.addEventListener("keydown", this.keydownEvent());
@@ -511,7 +588,7 @@ export default class GameManager {
       if (!this.player) return;
 
       if (e.key === "ArrowUp") {
-        const door = this.objects[0];
+        const door = this.doors[0];
 
         const isCollision = this.collisionManager.collisionPandO(
           this.player,

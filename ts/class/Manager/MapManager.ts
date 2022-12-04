@@ -61,477 +61,238 @@ export default class MapManager {
    * @param type 맵의 타입
    */
   private createStairs(blocks: Block[], type: MapType) {
-    // 랜덤한 블록 Y위치 후보
-    const candidateY = [200, 100];
+    const maxWidth = Math.ceil((innerWidth * 6) / 100) * 100;
+    const maxHeight = Math.floor(innerHeight / 100) * 100;
 
-    // 지상 맵
-    if (type === "ground") {
-      // 1층
-      Array(Math.ceil((innerWidth * 6) / 100))
-        .fill(null)
-        .forEach((v, i) =>
-          blocks.push(new GroundBlock({ x: i * 100, y: 900 }, "mid", type))
-        );
-      // 2층
-      Array(Math.ceil((innerWidth * 6) / 100))
-        .fill(null)
-        .forEach((v, i) => {
-          if (i % 12 === 0 || i % 12 === 1) {
-            blocks.push(new GroundBlock({ x: i * 100, y: 800 }, "top", type));
-          } else if (i % 12 === 2) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 800 }, "leftTopAngle", type)
-            );
-          } else if (
-            i % 12 === 3 ||
-            i % 12 === 4 ||
-            i % 12 === 5 ||
-            i % 12 === 6 ||
-            i % 12 === 7 ||
-            i % 12 === 8
-          ) {
-            blocks.push(new GroundBlock({ x: i * 100, y: 800 }, "mid", type));
-          } else if (i % 12 === 9) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 800 }, "rightTopAngle", type)
-            );
-          } else if (i % 12 === 10 || i % 12 === 11) {
-            blocks.push(new GroundBlock({ x: i * 100, y: 800 }, "top", type));
-          }
-        });
-      // 3층
-      Array(Math.ceil((innerWidth * 6) / 100))
-        .fill(null)
-        .forEach((v, i) => {
-          if (i % 12 === 0 || i % 12 === 1) return;
-          else if (i % 12 === 2) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 700 }, "leftTop", type)
-            );
-          } else if (i % 12 === 3) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 700 }, "leftTopAngle", type)
-            );
-          } else if (
-            i % 12 === 4 ||
-            i % 12 === 5 ||
-            i % 12 === 6 ||
-            i % 12 === 7
-          ) {
-            blocks.push(new GroundBlock({ x: i * 100, y: 700 }, "mid", type));
-          } else if (i % 12 === 8) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 700 }, "rightTopAngle", type)
-            );
-          } else if (i % 12 === 9) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 700 }, "rightTop", type)
-            );
-          } else if (i % 12 === 10 || i % 12 === 11) {
-            return;
-          }
-        });
-      // 4층
-      Array(Math.ceil((innerWidth * 6) / 100))
-        .fill(null)
-        .forEach((v, i) => {
-          if (i % 12 === 0 || i % 12 === 1 || i % 12 === 2) return;
-          else if (i % 12 === 3) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 600 }, "leftTop", type)
-            );
-          } else if (i % 12 === 4) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 600 }, "leftTopAngle", type)
-            );
-          } else if (i % 12 === 5 || i % 12 === 6) {
-            blocks.push(new GroundBlock({ x: i * 100, y: 600 }, "mid", type));
-          } else if (i % 12 === 7) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 600 }, "rightTopAngle", type)
-            );
-          } else if (i % 12 == 8) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 600 }, "rightTop", type)
-            );
-          } else if (i % 12 === 9 || i % 12 === 10 || i % 12 === 11) {
-            return;
-          }
-        });
-      // 5층
-      Array(Math.ceil((innerWidth * 6) / 100))
-        .fill(null)
-        .forEach((v, i) => {
-          if (i % 12 === 0 || i % 12 === 1 || i % 12 === 2 || i % 12 === 3)
-            return;
-          else if (i % 12 === 4) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 500 }, "leftTop", type)
-            );
-          } else if (i % 12 === 5) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 500 }, "leftTopAngle", type)
-            );
-          } else if (i % 12 === 6) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 500 }, "rightTopAngle", type)
-            );
-          } else if (i % 12 === 7) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 500 }, "rightTop", type)
-            );
-          } else if (
-            i % 12 === 8 ||
-            i % 12 === 9 ||
-            i % 12 === 10 ||
-            i % 12 === 11
-          ) {
-            return;
-          }
-        });
-      // 6층
-      Array(Math.ceil((innerWidth * 6) / 100))
-        .fill(null)
-        .forEach((v, i) => {
-          if (
-            i % 12 === 0 ||
-            i % 12 === 1 ||
-            i % 12 === 2 ||
-            i % 12 === 3 ||
-            i % 12 === 4
-          )
-            return;
-          else if (i % 12 === 5) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 400 }, "leftTop", type)
-            );
-          } else if (i % 12 === 6) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 400 }, "rightTop", type)
-            );
-          } else if (
-            i % 12 === 7 ||
-            i % 12 === 8 ||
-            i % 12 === 9 ||
-            i % 12 === 10 ||
-            i % 12 === 11
-          ) {
-            return;
-          }
-        });
-    }
-    // 지하 맵
-    else if (type === "underground") {
-      // 1층
-      Array(Math.ceil((innerWidth * 6) / 100))
-        .fill(null)
-        .forEach((v, i) =>
-          blocks.push(new GroundBlock({ x: i * 100, y: 900 }, "mid", type))
-        );
-      // 2층
-      Array(Math.ceil((innerWidth * 6) / 100))
-        .fill(null)
-        .forEach((v, i) => {
-          if (i % 12 === 0 || i % 12 === 1) {
-            blocks.push(new GroundBlock({ x: i * 100, y: 800 }, "top", type));
-          } else if (i % 12 === 2) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 800 }, "leftTopAngle", type)
-            );
-          } else if (
-            i % 12 === 3 ||
-            i % 12 === 4 ||
-            i % 12 === 5 ||
-            i % 12 === 6 ||
-            i % 12 === 7 ||
-            i % 12 === 8
-          ) {
-            blocks.push(new GroundBlock({ x: i * 100, y: 800 }, "mid", type));
-          } else if (i % 12 === 9) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 800 }, "rightTopAngle", type)
-            );
-          } else if (i % 12 === 10 || i % 12 === 11) {
-            blocks.push(new GroundBlock({ x: i * 100, y: 800 }, "top", type));
-          }
-        });
-      // 3층
-      Array(Math.ceil((innerWidth * 6) / 100))
-        .fill(null)
-        .forEach((v, i) => {
-          if (i % 12 === 0 || i % 12 === 1) return;
-          else if (i % 12 === 2) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 700 }, "leftTop", type)
-            );
-          } else if (i % 12 === 3) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 700 }, "leftTopAngle", type)
-            );
-          } else if (
-            i % 12 === 4 ||
-            i % 12 === 5 ||
-            i % 12 === 6 ||
-            i % 12 === 7
-          ) {
-            blocks.push(new GroundBlock({ x: i * 100, y: 700 }, "mid", type));
-          } else if (i % 12 === 8) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 700 }, "rightTopAngle", type)
-            );
-          } else if (i % 12 === 9) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 700 }, "rightTop", type)
-            );
-          } else if (i % 12 === 10 || i % 12 === 11) {
-            return;
-          }
-        });
-      // 4층
-      Array(Math.ceil((innerWidth * 6) / 100))
-        .fill(null)
-        .forEach((v, i) => {
-          if (i % 12 === 0 || i % 12 === 1 || i % 12 === 2) return;
-          else if (i % 12 === 3) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 600 }, "leftTop", type)
-            );
-          } else if (i % 12 === 4) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 600 }, "leftTopAngle", type)
-            );
-          } else if (i % 12 === 5 || i % 12 === 6) {
-            blocks.push(new GroundBlock({ x: i * 100, y: 600 }, "mid", type));
-          } else if (i % 12 === 7) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 600 }, "rightTopAngle", type)
-            );
-          } else if (i % 12 == 8) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 600 }, "rightTop", type)
-            );
-          } else if (i % 12 === 9 || i % 12 === 10 || i % 12 === 11) {
-            return;
-          }
-        });
-      // 5층
-      Array(Math.ceil((innerWidth * 6) / 100))
-        .fill(null)
-        .forEach((v, i) => {
-          if (i % 12 === 0 || i % 12 === 1 || i % 12 === 2 || i % 12 === 3)
-            return;
-          else if (i % 12 === 4) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 500 }, "leftTop", type)
-            );
-          } else if (i % 12 === 5) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 500 }, "leftTopAngle", type)
-            );
-          } else if (i % 12 === 6) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 500 }, "rightTopAngle", type)
-            );
-          } else if (i % 12 === 7) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 500 }, "rightTop", type)
-            );
-          } else if (
-            i % 12 === 8 ||
-            i % 12 === 9 ||
-            i % 12 === 10 ||
-            i % 12 === 11
-          ) {
-            return;
-          }
-        });
-      // 6층
-      Array(Math.ceil((innerWidth * 6) / 100))
-        .fill(null)
-        .forEach((v, i) => {
-          if (
-            i % 12 === 0 ||
-            i % 12 === 1 ||
-            i % 12 === 2 ||
-            i % 12 === 3 ||
-            i % 12 === 4
-          )
-            return;
-          else if (i % 12 === 5) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 400 }, "leftTop", type)
-            );
-          } else if (i % 12 === 6) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 400 }, "rightTop", type)
-            );
-          } else if (
-            i % 12 === 7 ||
-            i % 12 === 8 ||
-            i % 12 === 9 ||
-            i % 12 === 10 ||
-            i % 12 === 11
-          ) {
-            return;
-          }
-        });
-    }
-    // 눈 맵
-    else if (type === "snow") {
-      // 1층
-      Array(Math.ceil((innerWidth * 6) / 100))
-        .fill(null)
-        .forEach((v, i) =>
-          blocks.push(new GroundBlock({ x: i * 100, y: 900 }, "mid", type))
-        );
-      // 2층
-      Array(Math.ceil((innerWidth * 6) / 100))
-        .fill(null)
-        .forEach((v, i) => {
-          if (i % 12 === 0 || i % 12 === 1) {
-            blocks.push(new GroundBlock({ x: i * 100, y: 800 }, "top", type));
-          } else if (i % 12 === 2) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 800 }, "leftTopAngle", type)
-            );
-          } else if (
-            i % 12 === 3 ||
-            i % 12 === 4 ||
-            i % 12 === 5 ||
-            i % 12 === 6 ||
-            i % 12 === 7 ||
-            i % 12 === 8
-          ) {
-            blocks.push(new GroundBlock({ x: i * 100, y: 800 }, "mid", type));
-          } else if (i % 12 === 9) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 800 }, "rightTopAngle", type)
-            );
-          } else if (i % 12 === 10 || i % 12 === 11) {
-            blocks.push(new GroundBlock({ x: i * 100, y: 800 }, "top", type));
-          }
-        });
-      // 3층
-      Array(Math.ceil((innerWidth * 6) / 100))
-        .fill(null)
-        .forEach((v, i) => {
-          if (i % 12 === 0 || i % 12 === 1) return;
-          else if (i % 12 === 2) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 700 }, "leftTop", type)
-            );
-          } else if (i % 12 === 3) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 700 }, "leftTopAngle", type)
-            );
-          } else if (
-            i % 12 === 4 ||
-            i % 12 === 5 ||
-            i % 12 === 6 ||
-            i % 12 === 7
-          ) {
-            blocks.push(new GroundBlock({ x: i * 100, y: 700 }, "mid", type));
-          } else if (i % 12 === 8) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 700 }, "rightTopAngle", type)
-            );
-          } else if (i % 12 === 9) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 700 }, "rightTop", type)
-            );
-          } else if (i % 12 === 10 || i % 12 === 11) {
-            return;
-          }
-        });
-      // 4층
-      Array(Math.ceil((innerWidth * 6) / 100))
-        .fill(null)
-        .forEach((v, i) => {
-          if (i % 12 === 0 || i % 12 === 1 || i % 12 === 2) return;
-          else if (i % 12 === 3) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 600 }, "leftTop", type)
-            );
-          } else if (i % 12 === 4) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 600 }, "leftTopAngle", type)
-            );
-          } else if (i % 12 === 5 || i % 12 === 6) {
-            blocks.push(new GroundBlock({ x: i * 100, y: 600 }, "mid", type));
-          } else if (i % 12 === 7) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 600 }, "rightTopAngle", type)
-            );
-          } else if (i % 12 == 8) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 600 }, "rightTop", type)
-            );
-          } else if (i % 12 === 9 || i % 12 === 10 || i % 12 === 11) {
-            return;
-          }
-        });
-      // 5층
-      Array(Math.ceil((innerWidth * 6) / 100))
-        .fill(null)
-        .forEach((v, i) => {
-          if (i % 12 === 0 || i % 12 === 1 || i % 12 === 2 || i % 12 === 3)
-            return;
-          else if (i % 12 === 4) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 500 }, "leftTop", type)
-            );
-          } else if (i % 12 === 5) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 500 }, "leftTopAngle", type)
-            );
-          } else if (i % 12 === 6) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 500 }, "rightTopAngle", type)
-            );
-          } else if (i % 12 === 7) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 500 }, "rightTop", type)
-            );
-          } else if (
-            i % 12 === 8 ||
-            i % 12 === 9 ||
-            i % 12 === 10 ||
-            i % 12 === 11
-          ) {
-            return;
-          }
-        });
-      // 6층
-      Array(Math.ceil((innerWidth * 6) / 100))
-        .fill(null)
-        .forEach((v, i) => {
-          if (
-            i % 12 === 0 ||
-            i % 12 === 1 ||
-            i % 12 === 2 ||
-            i % 12 === 3 ||
-            i % 12 === 4
-          )
-            return;
-          else if (i % 12 === 5) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 400 }, "leftTop", type)
-            );
-          } else if (i % 12 === 6) {
-            blocks.push(
-              new GroundBlock({ x: i * 100, y: 400 }, "rightTop", type)
-            );
-          } else if (
-            i % 12 === 7 ||
-            i % 12 === 8 ||
-            i % 12 === 9 ||
-            i % 12 === 10 ||
-            i % 12 === 11
-          ) {
-            return;
-          }
-        });
-    }
+    // 랜덤한 블록 Y위치 후보
+    const candidateY = [maxHeight - 700, maxHeight - 800, maxHeight - 900];
+
+    // 1층
+    Array(maxWidth / 100)
+      .fill(null)
+      .forEach((v, i) =>
+        blocks.push(new GroundBlock({ x: i * 100, y: maxHeight }, "mid", type))
+      );
+    // 2층
+    Array(maxWidth / 100)
+      .fill(null)
+      .forEach((v, i) => {
+        if (maxWidth / 100 - 10 < i) {
+          blocks.push(
+            new GroundBlock({ x: i * 100, y: maxHeight - 100 }, "top", type)
+          );
+          return;
+        }
+
+        if (i % 12 === 0 || i % 12 === 1) {
+          blocks.push(
+            new GroundBlock({ x: i * 100, y: maxHeight - 100 }, "top", type)
+          );
+        } else if (i % 12 === 2) {
+          blocks.push(
+            new GroundBlock(
+              { x: i * 100, y: maxHeight - 100 },
+              "leftTopAngle",
+              type
+            )
+          );
+        } else if (
+          i % 12 === 3 ||
+          i % 12 === 4 ||
+          i % 12 === 5 ||
+          i % 12 === 6 ||
+          i % 12 === 7 ||
+          i % 12 === 8
+        ) {
+          blocks.push(
+            new GroundBlock({ x: i * 100, y: maxHeight - 100 }, "mid", type)
+          );
+        } else if (i % 12 === 9) {
+          blocks.push(
+            new GroundBlock(
+              { x: i * 100, y: maxHeight - 100 },
+              "rightTopAngle",
+              type
+            )
+          );
+        } else if (i % 12 === 10 || i % 12 === 11) {
+          blocks.push(
+            new GroundBlock({ x: i * 100, y: maxHeight - 100 }, "top", type)
+          );
+        }
+      });
+    // 3층
+    Array(maxWidth / 100)
+      .fill(null)
+      .forEach((v, i) => {
+        if (maxWidth / 100 - 10 < i) return;
+
+        if (i % 12 === 0 || i % 12 === 1) return;
+        else if (i % 12 === 2) {
+          blocks.push(
+            new GroundBlock({ x: i * 100, y: maxHeight - 200 }, "leftTop", type)
+          );
+        } else if (i % 12 === 3) {
+          blocks.push(
+            new GroundBlock(
+              { x: i * 100, y: maxHeight - 200 },
+              "leftTopAngle",
+              type
+            )
+          );
+        } else if (
+          i % 12 === 4 ||
+          i % 12 === 5 ||
+          i % 12 === 6 ||
+          i % 12 === 7
+        ) {
+          blocks.push(
+            new GroundBlock({ x: i * 100, y: maxHeight - 200 }, "mid", type)
+          );
+        } else if (i % 12 === 8) {
+          blocks.push(
+            new GroundBlock(
+              { x: i * 100, y: maxHeight - 200 },
+              "rightTopAngle",
+              type
+            )
+          );
+        } else if (i % 12 === 9) {
+          blocks.push(
+            new GroundBlock(
+              { x: i * 100, y: maxHeight - 200 },
+              "rightTop",
+              type
+            )
+          );
+        } else if (i % 12 === 10 || i % 12 === 11) {
+          return;
+        }
+      });
+    // 4층
+    Array(maxWidth / 100)
+      .fill(null)
+      .forEach((v, i) => {
+        if (maxWidth / 100 - 10 < i) return;
+
+        if (i % 12 === 0 || i % 12 === 1 || i % 12 === 2) return;
+        else if (i % 12 === 3) {
+          blocks.push(
+            new GroundBlock({ x: i * 100, y: maxHeight - 300 }, "leftTop", type)
+          );
+        } else if (i % 12 === 4) {
+          blocks.push(
+            new GroundBlock(
+              { x: i * 100, y: maxHeight - 300 },
+              "leftTopAngle",
+              type
+            )
+          );
+        } else if (i % 12 === 5 || i % 12 === 6) {
+          blocks.push(
+            new GroundBlock({ x: i * 100, y: maxHeight - 300 }, "mid", type)
+          );
+        } else if (i % 12 === 7) {
+          blocks.push(
+            new GroundBlock(
+              { x: i * 100, y: maxHeight - 300 },
+              "rightTopAngle",
+              type
+            )
+          );
+        } else if (i % 12 == 8) {
+          blocks.push(
+            new GroundBlock(
+              { x: i * 100, y: maxHeight - 300 },
+              "rightTop",
+              type
+            )
+          );
+        } else if (i % 12 === 9 || i % 12 === 10 || i % 12 === 11) {
+          return;
+        }
+      });
+    // 5층
+    Array(maxWidth / 100)
+      .fill(null)
+      .forEach((v, i) => {
+        if (maxWidth / 100 - 10 < i) return;
+
+        if (i % 12 === 0 || i % 12 === 1 || i % 12 === 2 || i % 12 === 3)
+          return;
+        else if (i % 12 === 4) {
+          blocks.push(
+            new GroundBlock({ x: i * 100, y: maxHeight - 400 }, "leftTop", type)
+          );
+        } else if (i % 12 === 5) {
+          blocks.push(
+            new GroundBlock(
+              { x: i * 100, y: maxHeight - 400 },
+              "leftTopAngle",
+              type
+            )
+          );
+        } else if (i % 12 === 6) {
+          blocks.push(
+            new GroundBlock(
+              { x: i * 100, y: maxHeight - 400 },
+              "rightTopAngle",
+              type
+            )
+          );
+        } else if (i % 12 === 7) {
+          blocks.push(
+            new GroundBlock(
+              { x: i * 100, y: maxHeight - 400 },
+              "rightTop",
+              type
+            )
+          );
+        } else if (
+          i % 12 === 8 ||
+          i % 12 === 9 ||
+          i % 12 === 10 ||
+          i % 12 === 11
+        ) {
+          return;
+        }
+      });
+    // 6층
+    Array(maxWidth / 100)
+      .fill(null)
+      .forEach((v, i) => {
+        if (maxWidth / 100 - 10 < i) return;
+
+        if (
+          i % 12 === 0 ||
+          i % 12 === 1 ||
+          i % 12 === 2 ||
+          i % 12 === 3 ||
+          i % 12 === 4
+        )
+          return;
+        else if (i % 12 === 5) {
+          blocks.push(
+            new GroundBlock({ x: i * 100, y: maxHeight - 500 }, "leftTop", type)
+          );
+        } else if (i % 12 === 6) {
+          blocks.push(
+            new GroundBlock(
+              { x: i * 100, y: maxHeight - 500 },
+              "rightTop",
+              type
+            )
+          );
+        } else if (
+          i % 12 === 7 ||
+          i % 12 === 8 ||
+          i % 12 === 9 ||
+          i % 12 === 10 ||
+          i % 12 === 11
+        ) {
+          return;
+        }
+      });
 
     // 랜덤 위치
     Array(10)
@@ -540,7 +301,8 @@ export default class MapManager {
         // 0 ~ (innerWidth * 6) - 300
         const randomX = Math.floor(Math.random() * (innerWidth * 6 - 300));
         // 300 ~ 600
-        const randomY = candidateY[Math.floor(Math.random() * 2)];
+        const randomY =
+          candidateY[Math.floor(Math.random() * candidateY.length)];
 
         blocks.push(
           new GroundBlock({ x: randomX + 0, y: randomY }, "leftArc", type)
@@ -561,8 +323,13 @@ export default class MapManager {
    * @param holeCount 구멍 개수
    */
   private createStraight(blocks: Block[], type: MapType, holeCount: number) {
+    const maxWidth = Math.ceil((innerWidth * 6) / 100) * 100;
+    const maxHeight = Math.floor(innerHeight / 100) * 100;
+
     // 랜덤한 블록 Y위치 후보
-    const candidateY = [600, 500, 400, 300];
+    const candidateY = Array(maxHeight / 100 - 4)
+      .fill(null)
+      .map((v, i) => (i + 2) * 100);
 
     // 블록을 비울 랜덤한 공간 ( 구멍 )
     const randomPosX = Array(holeCount)
@@ -577,68 +344,78 @@ export default class MapManager {
     // 지상 맵
     if (type === "ground") {
       // 1층
-      Array(Math.ceil((innerWidth * 6) / 100))
+      Array(maxWidth / 100)
         .fill(null)
         .forEach((v, i) => {
           if (randomPosX.find((v) => v === i || v === i - 1 || v === i + 1))
             return;
 
-          blocks.push(new GroundBlock({ x: i * 100, y: 900 }, "mid", type));
+          blocks.push(
+            new GroundBlock({ x: i * 100, y: maxHeight }, "mid", type)
+          );
         });
       // 2층
-      Array(Math.ceil((innerWidth * 6) / 100))
+      Array(maxWidth / 100)
         .fill(null)
         .forEach((v, i) => {
           if (randomPosX.find((v) => v === i || v === i - 1 || v === i + 1))
             return;
 
-          blocks.push(new GroundBlock({ x: i * 100, y: 800 }, "top", type));
+          blocks.push(
+            new GroundBlock({ x: i * 100, y: maxHeight - 100 }, "top", type)
+          );
         });
     }
     // 지하 맵
     else if (type === "underground") {
       // 1층
-      Array(Math.ceil((innerWidth * 6) / 100))
+      Array(maxWidth / 100)
         .fill(null)
         .forEach((v, i) => {
           if (randomPosX.find((v) => v === i || v === i - 1 || v === i + 1))
             return;
 
           blocks.push(
-            new UndergroundBlock({ x: i * 100, y: 900 }, "mid", type)
+            new UndergroundBlock({ x: i * 100, y: maxHeight }, "mid", type)
           );
         });
       // 2층
-      Array(Math.ceil((innerWidth * 6) / 100))
+      Array(maxWidth / 100)
         .fill(null)
         .forEach((v, i) => {
           if (randomPosX.find((v) => v === i || v === i - 1 || v === i + 1))
             return;
 
           blocks.push(
-            new UndergroundBlock({ x: i * 100, y: 800 }, "top", type)
+            new UndergroundBlock(
+              { x: i * 100, y: maxHeight - 100 },
+              "top",
+              type
+            )
           );
         });
     }
     // 눈 맵
     else if (type === "snow") {
       // 1층
-      Array(Math.ceil((innerWidth * 6) / 100))
+      Array(maxWidth / 100)
         .fill(null)
         .forEach((v, i) => {
           if (randomPosX.find((v) => v === i || v === i - 1 || v === i + 1))
             return;
 
-          blocks.push(new SnowBlock({ x: i * 100, y: 900 }, "mid", type));
+          blocks.push(new SnowBlock({ x: i * 100, y: maxHeight }, "mid", type));
         });
       // 2층
-      Array(Math.ceil((innerWidth * 6) / 100))
+      Array(maxWidth / 100)
         .fill(null)
         .forEach((v, i) => {
           if (randomPosX.find((v) => v === i || v === i - 1 || v === i + 1))
             return;
 
-          blocks.push(new SnowBlock({ x: i * 100, y: 800 }, "top", type));
+          blocks.push(
+            new SnowBlock({ x: i * 100, y: maxHeight - 100 }, "top", type)
+          );
         });
     }
 
@@ -646,25 +423,38 @@ export default class MapManager {
     randomPosX.forEach((v) => {
       // 좌측
       blocks.push(
-        new GroundBlock({ x: (v - 1) * 100, y: 800 }, "rightTop", type)
+        new GroundBlock(
+          { x: (v - 1) * 100, y: maxHeight - 100 },
+          "rightTop",
+          type
+        )
       );
-      blocks.push(new GroundBlock({ x: (v - 1) * 100, y: 900 }, "right", type));
+      blocks.push(
+        new GroundBlock({ x: (v - 1) * 100, y: maxHeight }, "right", type)
+      );
 
       // 우측
       blocks.push(
-        new GroundBlock({ x: (v + 1) * 100, y: 800 }, "leftTop", type)
+        new GroundBlock(
+          { x: (v + 1) * 100, y: maxHeight - 100 },
+          "leftTop",
+          type
+        )
       );
-      blocks.push(new GroundBlock({ x: (v + 1) * 100, y: 900 }, "left", type));
+      blocks.push(
+        new GroundBlock({ x: (v + 1) * 100, y: maxHeight }, "left", type)
+      );
     });
 
     // 랜덤 위치
-    Array(10)
+    Array(Math.floor((innerWidth / 100) * 0.5))
       .fill(null)
       .forEach((v, i) => {
         // 0 ~ (innerWidth * 6) - 300
         const randomX = Math.floor(Math.random() * (innerWidth * 6 - 300));
         // 300 ~ 600
-        const randomY = candidateY[Math.floor(Math.random() * 4)];
+        const randomY =
+          candidateY[Math.floor(Math.random() * candidateY.length)];
 
         blocks.push(
           new GroundBlock({ x: randomX + 0, y: randomY }, "leftArc", type)

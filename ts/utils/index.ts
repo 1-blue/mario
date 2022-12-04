@@ -181,4 +181,27 @@ export const myObjectKeyTable = {
     // 이미지 x 위치
     xPos: 0,
   },
+
+  // 코인
+  coin: {
+    //
+    width: {
+      front: 40,
+      frontSide: 26,
+      backSide: 20,
+      back: 26,
+    },
+    height: 54,
+
+    // 이미지 y 위치
+    yPos: 106,
+
+    // 이미지 x 위치
+    xPos: {
+      front: 0,
+      frontSide: 0 + 40,
+      backSide: 0 + 40 + 26,
+      back: 0 + 40 + 26 + 20,
+    },
+  },
 };

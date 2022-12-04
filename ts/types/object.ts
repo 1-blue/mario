@@ -10,3 +10,8 @@ export type MyObjectKeyTable =
  * 오브젝트 타입
  */
 export type MyObjectType = keyof typeof myObjectKeyTable;
+
+/**
+ * 코인 상태
+ */
+export type CoinState = keyof typeof myObjectKeyTable.coin.xPos;

@@ -6,6 +6,8 @@ import Block from "../Block/index";
 import Mario from "../Character/Player/Mario";
 import Goomba from "../Character/Enemy/Goomba";
 import MyObject from "../MyObject/index";
+import Door from "../MyObject/Door";
+import Coin from "../MyObject/Coin";
 
 /**
  * 충돌 처리 매니저 ( 싱글톤 )
@@ -275,12 +277,12 @@ export default class CollisionManager {
   }
 
   /**
-   * 플레이어와 오브젝트가 겹치는지 여부
+   * 플레이어와 문이 겹치는지 여부
    * @param player 플레이어 객체
-   * @param object 오브젝트 객체
+   * @param door 문 객체
    * @returns T / F
    */
-  public collisionPandO(player: Player, object: MyObject) {
+  public collisionPandO(player: Player, door: Door) {
     // 플레이어의 상하좌우 좌표
     const { x, y } = player.pos;
     const { w, h } = player.size;
@@ -290,25 +292,65 @@ export default class CollisionManager {
     const pBottom = y + h;
 
     {
-      // 오브젝트의 상하좌우 좌표
-      const { x, y } = object.pos;
-      const { w, h } = object.size;
-      const oLeft = x;
-      const oRight = x + w;
-      const oTop = y;
-      const oBottom = y + h;
+      // 문의 상하좌우 좌표
+      const { x, y } = door.pos;
+      const { w, h } = door.size;
+      const dLeft = x;
+      const dRight = x + w;
+      const dTop = y;
+      const dBottom = y + h;
 
-      // 플레이어와 오브젝트가 겹치는 경우
+      // 플레이어와 문이 겹치는 경우
       if (
-        oLeft <= pRight &&
-        oRight >= pLeft &&
-        oTop <= pBottom &&
-        oBottom >= pTop
+        dLeft <= pRight &&
+        dRight >= pLeft &&
+        dTop <= pBottom &&
+        dBottom >= pTop
       ) {
         return true;
       }
     }
 
     return false;
+  }
+
+  /**
+   * 플레이어와 동전이 겹치는지 여부
+   * @param player 플레이어 객체
+   * @param coins 동전 객체들
+   * @returns 제거될 코인 객체들
+   */
+  public collisionPandC(player: Player, coins: Coin[]) {
+    const removedCoins: Coin[] = [];
+
+    // 플레이어의 상하좌우 좌표
+    const { x, y } = player.pos;
+    const { w, h } = player.size;
+    const pLeft = x;
+    const pRight = x + w;
+    const pTop = y;
+    const pBottom = y + h;
+
+    coins.forEach((coin) => {
+      // 동전의 상하좌우 좌표
+      const { x, y } = coin.pos;
+      const { w, h } = coin.size;
+      const cLeft = x;
+      const cRight = x + w;
+      const cTop = y;
+      const cBottom = y + h;
+
+      // 플레이어와 동전이 겹치는 경우
+      if (
+        cLeft <= pRight &&
+        cRight >= pLeft &&
+        cTop <= pBottom &&
+        cBottom >= pTop
+      ) {
+        removedCoins.push(coin);
+      }
+    });
+
+    return removedCoins;
   }
 }

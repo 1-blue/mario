@@ -62,6 +62,7 @@ export default abstract class MyObject {
   get pos() {
     return this._pos;
   }
+
   // size
   get size() {
     return this._size;

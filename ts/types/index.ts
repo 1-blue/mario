@@ -61,3 +61,5 @@ export type {
   UndergroundBlockShape,
   SnowBlockShape,
 } from "./block";
+
+export type { CoinState, MyObjectKeyTable, MyObjectType } from "./object";
