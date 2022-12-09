@@ -19,8 +19,12 @@ export default class Coin extends MyObject {
 
     // 랜덤 위치에 생성
     if (!_pos) {
-      // 랜덤한 Y위치 후보
-      const candidateY = [700, 600, 500, 400, 300, 200];
+      const maxHeight = Math.floor(innerHeight / 100) * 100;
+
+      // 랜덤한 블록 Y위치 후보
+      const candidateY = Array(maxHeight / 100 - 3)
+        .fill(null)
+        .map((v, i) => (i + 2) * 100);
 
       // 랜덤한 X위치
       const randomPosX = Math.ceil(Math.random() * (innerWidth * 6));

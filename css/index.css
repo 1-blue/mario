@@ -18,7 +18,7 @@ body {
 }
 
 #canvas {
-  background-color: gray;
+  background-color: white;
 }
 
 /* ==========  ========== */
@@ -40,8 +40,6 @@ body {
 
   font-size: 1.4rem;
   font-weight: bold;
-
-  white-space: pre-line;
 }
 #play-ui .coin {
   position: fixed;
@@ -51,8 +49,6 @@ body {
 
   font-size: 1.4rem;
   font-weight: bold;
-
-  white-space: pre-line;
 }
 #play-ui .enemy {
   position: fixed;
@@ -62,8 +58,15 @@ body {
 
   font-size: 1.4rem;
   font-weight: bold;
+}
+#play-ui .stage {
+  position: fixed;
+  top: 4vh;
+  left: 50vw;
+  z-index: 10;
 
-  white-space: pre-line;
+  font-size: 1.8rem;
+  font-weight: bold;
 }
 
 /* ========== start/end ui ========== */

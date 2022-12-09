@@ -32,16 +32,18 @@ import type { GameState, KeyType, MapShape, MapType } from "../../types/index";
  * @param doors Door의 인스턴스들
  * @param coins Coin의 인스턴스들
  *
- * @param $playUI play ui Element
- * @param $readyUI ready ui Element
- * @param $endUI end ui Element
- *
  * @param state 현재 게임 상태 ( "ready" | "play" | "end" )
  * @param mapType 현재 맵의 타입 ( "ground" | "underground" | "snow" )
  * @param mapShape 현재 맵의 형태 ( "stairs" | "straight" )
  * @param score 점수
+ * @param stage 스테이지
  * @param enemyCount 적 개수
  * @param holeCount 구멍 개수
+ * @param coinCount 코인 개수
+ *
+ * @param $playUI play ui Element
+ * @param $readyUI ready ui Element
+ * @param $endUI end ui Element
  */
 export default class GameManager {
   private static instance: GameManager;
@@ -57,19 +59,20 @@ export default class GameManager {
   private doors!: Door[];
   private coins!: Coin[];
 
-  // 렌더링할 게임중/시작/종료 UI Element
-  private $playUI!: HTMLElement;
-  private $readyUI!: HTMLElement;
-  private $endUI!: HTMLElement;
-
   // 게임 흐름을 위한 변수들
   private state!: GameState;
   private mapType!: MapType;
   private mapShape!: MapShape;
   private score!: number;
+  private stage!: number;
   private enemyCount!: number;
   private holeCount!: number;
   private coinCount!: number;
+
+  // 렌더링할 게임중/시작/종료 UI Element
+  private $playUI!: HTMLElement;
+  private $readyUI!: HTMLElement;
+  private $endUI!: HTMLElement;
 
   constructor() {
     // 싱글톤으로 구현
@@ -91,6 +94,7 @@ export default class GameManager {
     this.mapType = "ground";
     this.mapShape = "straight";
     this.score = 0;
+    this.stage = 1;
     this.enemyCount = 20;
     this.holeCount = 6;
     this.coinCount = 20;
@@ -151,7 +155,7 @@ export default class GameManager {
     const $$mapShapeBtn1 = document.createElement("button");
     const $$mapShapeBtn2 = document.createElement("button");
 
-    $$mapShape.style.top = "40%";
+    $$mapShape.style.top = "35%";
     $$mapShapeBtn1.type = "button";
     $$mapShapeBtn1.innerText = "직선 맵";
     $$mapShapeBtn1.classList.add("active");
@@ -297,7 +301,7 @@ export default class GameManager {
         });
       }, 500);
 
-      this.score += deadEnemies.length * 100;
+      this.score += deadEnemies.length * (100 * this.stage * 0.5);
 
       const $score = this.$playUI.querySelector("#play-ui .score");
       if ($score) {
@@ -311,7 +315,7 @@ export default class GameManager {
         this.coins = this.coins.filter((coin) => coin !== c);
       });
 
-      this.score += 100 * removedCoins.length;
+      this.score += removedCoins.length * (100 * this.stage * 0.5);
 
       const $score = this.$playUI.querySelector("#play-ui .score");
       if ($score) {
@@ -421,6 +425,8 @@ export default class GameManager {
    * 다음 스테이지
    */
   private nextState() {
+    this.score += 1000 * this.stage;
+    this.stage += 1;
     this.enemyCount += 10;
     this.holeCount += 2;
     this.coinCount += 10;
@@ -475,6 +481,9 @@ export default class GameManager {
 
     const $score = this.$playUI.querySelector("#play-ui .score");
     if ($score) $score.innerHTML = "Score : " + this.score;
+
+    const $stage = this.$playUI.querySelector("#play-ui .stage");
+    if ($stage) $stage.innerHTML = "Stage " + this.stage;
 
     const $enemy = this.$playUI.querySelector("#play-ui .enemy");
     if ($enemy) $enemy.innerHTML = "Enemy : " + this.enemies.length;
@@ -560,11 +569,15 @@ export default class GameManager {
       .fill(null)
       .forEach(() => this.coins.push(new Coin()));
 
-    // 점수 초기화
+    // 점수/스테이지 초기화
     this.score = 0;
+    this.stage = 1;
 
     const $score = this.$playUI.querySelector("#play-ui .score");
     if ($score) $score.innerHTML = "Score : " + this.score;
+
+    const $stage = this.$playUI.querySelector("#play-ui .stage");
+    if ($stage) $stage.innerHTML = "Stage " + this.stage;
 
     const $enemy = this.$playUI.querySelector("#play-ui .enemy");
     if ($enemy) $enemy.innerHTML = "Enemy : " + this.enemies.length;
